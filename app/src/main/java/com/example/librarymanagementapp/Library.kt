@@ -1,9 +1,12 @@
 package com.example.librarymanagementapp
 
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 data class Book(
+    val id: Int,
     val title: String,
     val genre: Genre,
     val author: String,
@@ -27,11 +30,36 @@ enum class Genre {
     BIOGRAPHY,
 }
 
+sealed class State<out T> {
+    object Loading : State<Nothing>()
+    data class Data<out T>(val data: T) : State<T>()
+    data class Error(val message: String) : State<Nothing>()
+}
+
 object LibraryDB {
     private val books = initBooks()
     private val bookOrders = initBookOrders()
 
-    fun getAvailableBooks(): List<Book>? = books.filter { it.isAvailable }
+    suspend fun loadBooks(): List<Book>? {
+        delay(2000)
+        return books.filter { it.isAvailable }.take(5)
+    }
+
+    suspend fun getBooksByRange(start: Int, end: Int): List<Book>? {
+        delay(Random.nextLong(100, 3000))
+
+        return try {
+            books.subList(start, end)
+        } catch (e: IndexOutOfBoundsException) {
+            if (start == books.size) {
+                return listOf(books.last())
+            } else if (start > books.size) {
+                return null
+            }
+            val newEnd = books.size % end
+            books.subList(start, newEnd)
+        }
+    }
 
     fun addBook(book: Book): Book {
         books.add(book)
@@ -70,21 +98,34 @@ object LibraryDB {
     // Group books by Genre
     fun groupByGenre(): Map<Genre, List<Book>> = books.groupBy { it.genre }
 
+
     // Group books by availability
     private fun groupByAvailability() = books.groupBy { it.isAvailable }
 
     //Add sorting by title, release date, or price. For each sorting order show available first
-    fun sortedByTitleAscending() = groupByAvailability().flatMap { entry -> entry.value.sortedBy { it.title } }
-    fun sortedByTitleDescending() = groupByAvailability().flatMap { entry -> entry.value.sortedByDescending { it.title } }
+    suspend fun sortedByTitleAscending(): List<Book>? {
+        delay(3000)
+        return groupByAvailability().flatMap { entry -> entry.value.sortedBy { it.title } }
+    }
 
-    fun sortedByReleaseDateAscending() = groupByAvailability().flatMap { entry -> entry.value.sortedBy { it.releaseDate } }
-    fun sortedByReleaseDateDescending() = groupByAvailability().flatMap { entry -> entry.value.sortedByDescending { it.releaseDate } }
+    suspend fun sortedByTitleDescending() =
+        groupByAvailability().flatMap { entry -> entry.value.sortedByDescending { it.title } }
 
-    fun sortedByPriceAscending() = groupByAvailability().flatMap { entry -> entry.value.sortedBy { it.price } }
-    fun sortedByPriceDescending() = groupByAvailability().flatMap { entry -> entry.value.sortedByDescending { it.price } }
+    suspend fun sortedByReleaseDateAscending() =
+        groupByAvailability().flatMap { entry -> entry.value.sortedBy { it.releaseDate } }
+
+    suspend fun sortedByReleaseDateDescending() =
+        groupByAvailability().flatMap { entry -> entry.value.sortedByDescending { it.releaseDate } }
+
+    suspend fun sortedByPriceAscending() =
+        groupByAvailability().flatMap { entry -> entry.value.sortedBy { it.price } }
+
+    suspend fun sortedByPriceDescending() =
+        groupByAvailability().flatMap { entry -> entry.value.sortedByDescending { it.price } }
 
     // Count total books by genre
-    fun countByGenre(genre: Genre) = books.count { it.genre == genre }
+     fun countByGenre(genre: Genre) = books.count { it.genre == genre }
+
 
     // Count total books by author
     fun countByAuthor(author: String) = books.count { it.author == author }
@@ -93,16 +134,20 @@ object LibraryDB {
     fun mostPopular() = books.sortedBy { it.borrowCount }.takeLast(3)
 
     // Filter books by author
-    fun filterByAuthor(author: String) = books.filter { it.author == author }
+    suspend fun filterByAuthor(author: String) = books.filter { it.author == author }
 
     // Filter books by availability
-    fun filterByAvailability(isAvailable: Boolean) = books.filter { it.isAvailable == isAvailable }
+    suspend fun filterByAvailability(isAvailable: Boolean) =
+        books.filter { it.isAvailable == isAvailable }
 
     // Extract all unique authors
     fun getUniqueAuthors() = books.map { it.author }.toSet()  // distinct()
 
     // Create a summary report for borrowed books count by genre
-    fun reportByGenre(): Map<Genre, Int> = books.groupingBy { it.genre }.eachCount()
+    suspend fun reportByGenre(): Map<Genre, Int> {
+        delay(3000)
+        return books.groupingBy { it.genre }.eachCount()
+    }
 
     // trending(last 5 min or another testable time) author
     fun trendingAuthor(): String {
@@ -114,10 +159,10 @@ object LibraryDB {
             .key
     }
 
-
     private fun initBooks(): MutableList<Book> {
-        return mutableListOf(
+        val books =  mutableListOf(
             Book(
+                id = 1,
                 title = "The Great Gatsby",
                 genre = Genre.FICTION,
                 author = "F. Scott Fitzgerald",
@@ -128,6 +173,7 @@ object LibraryDB {
                 availableCount = 5
             ),
             Book(
+                id = 2,
                 title = "The Da Vinci Code",
                 genre = Genre.MYSTERY,
                 author = "Dan Brown",
@@ -138,6 +184,7 @@ object LibraryDB {
                 availableCount = 5
             ),
             Book(
+                id = 3,
                 title = "A Brief History of Time",
                 genre = Genre.FICTION,
                 author = "Stephen Hawking",
@@ -148,6 +195,7 @@ object LibraryDB {
                 availableCount = 5
             ),
             Book(
+                id = 4,
                 title = "Harry Potter and the Philosopher's Stone",
                 genre = Genre.FANTASY,
                 author = "J.K. Rowling",
@@ -158,6 +206,7 @@ object LibraryDB {
                 availableCount = 5
             ),
             Book(
+                id = 5,
                 title = "Dune",
                 genre = Genre.SCIENCE_FICTION,
                 author = "Frank Herbert",
@@ -168,6 +217,7 @@ object LibraryDB {
                 availableCount = 5
             ),
             Book(
+                id = 6,
                 title = "Steve Jobs",
                 genre = Genre.BIOGRAPHY,
                 author = "Walter Isaacson",
@@ -178,6 +228,7 @@ object LibraryDB {
                 availableCount = 5
             ),
             Book(
+                id = 7,
                 title = "Harry Potter and the Chamber of Secrets",
                 genre = Genre.FANTASY,
                 author = "J.K. Rowling",
@@ -188,6 +239,33 @@ object LibraryDB {
                 availableCount = 5
             )
         )
+
+        books.addAll(generateRandomBooks(30))
+
+        return books
+    }
+
+    private fun generateRandomBooks(n: Int): List<Book> {
+        fun randomDate(): LocalDate {
+            val startEpochDay = LocalDate.of(1900, 1, 1).toEpochDay()
+            val endEpochDay = LocalDate.of(2025, 12, 31).toEpochDay()
+            val randomDay = Random.nextLong(startEpochDay, endEpochDay)
+            return LocalDate.ofEpochDay(randomDay)
+        }
+
+        return List(n) { index ->
+            Book(
+                id = index+10,
+                title = "Title $index",
+                genre = Genre.values().random(),
+                author = "Author $index",
+                releaseDate = randomDate(),
+                price = Random.nextFloat() * 100,
+                isAvailable = Random.nextBoolean(),
+                borrowCount = Random.nextInt(0, 100),
+                availableCount = Random.nextInt(0, 20)
+            )
+        }
     }
 
     private fun initBookOrders(): MutableList<BookOrder> {
