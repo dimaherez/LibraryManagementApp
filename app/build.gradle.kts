@@ -55,4 +55,17 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.androidx.lifecycle.extensions)
+
+    implementation (libs.androidx.recyclerview)
+
+    // View Binding
+    implementation (libs.androidx.viewbinding)
+
+    // Coroutines
+    implementation (libs.kotlinx.coroutines.core)
+    implementation (libs.kotlinx.coroutines.android)
+
+    // Lifecycle (if needed)
+    implementation (libs.androidx.lifecycle.runtime.ktx)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
 }

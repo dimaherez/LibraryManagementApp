@@ -1,40 +1,12 @@
 package com.example.librarymanagementapp
 
+import com.example.librarymanagementapp.enums.Genre
+import com.example.librarymanagementapp.models.Book
+import com.example.librarymanagementapp.models.BookOrder
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.random.Random
-
-data class Book(
-    val id: Int,
-    val title: String,
-    val genre: Genre,
-    val author: String,
-    val releaseDate: LocalDate,
-    val price: Float,
-    var isAvailable: Boolean,
-    var borrowCount: Int,
-    var availableCount: Int
-)
-
-data class BookOrder(
-    val book: Book,
-    val orderDateTime: LocalDateTime
-)
-
-enum class Genre {
-    FICTION,
-    FANTASY,
-    SCIENCE_FICTION,
-    MYSTERY,
-    BIOGRAPHY,
-}
-
-sealed class State<out T> {
-    object Loading : State<Nothing>()
-    data class Data<out T>(val data: T) : State<T>()
-    data class Error(val message: String) : State<Nothing>()
-}
 
 object LibraryDB {
     private val books = initBooks()
@@ -42,7 +14,12 @@ object LibraryDB {
 
     suspend fun loadBooks(): List<Book>? {
         delay(2000)
-        return books.filter { it.isAvailable }.take(5)
+        return books.filter { it.isAvailable }
+    }
+
+    suspend fun getBookOrders(): List<BookOrder>? {
+        delay(2000)
+        return bookOrders
     }
 
     suspend fun getBooksByRange(start: Int, end: Int): List<Book>? {
@@ -137,8 +114,10 @@ object LibraryDB {
     suspend fun filterByAuthor(author: String) = books.filter { it.author == author }
 
     // Filter books by availability
-    suspend fun filterByAvailability(isAvailable: Boolean) =
-        books.filter { it.isAvailable == isAvailable }
+    suspend fun filterByAvailability(): List<Book> {
+        delay(1000)
+        return books.filter { it.isAvailable }
+    }
 
     // Extract all unique authors
     fun getUniqueAuthors() = books.map { it.author }.toSet()  // distinct()

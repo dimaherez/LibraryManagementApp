@@ -3,26 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/mvpFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.example.librarymanagementapp.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/mvpFragment"
+        android:name="com.example.librarymanagementapp.mvp.MVPFragment"
+        android:label="MVP"
+        tools:layout="@layout/fragment_mvp" />
 
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-    </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.librarymanagementapp.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/mvvmFragment"
+        android:name="com.example.librarymanagementapp.mvvm.MVVMFragment"
+        android:label="MVVM"
+        tools:layout="@layout/fragment_mvvm" />
 
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+    <fragment
+        android:id="@+id/mviFragment"
+        android:name="com.example.librarymanagementapp.mvi.MVIFragment"
+        android:label="MVI"
+        tools:layout="@layout/fragment_mvi" />
+
+
 </navigation>
