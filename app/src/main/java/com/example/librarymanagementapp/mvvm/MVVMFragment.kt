@@ -73,7 +73,8 @@ class MVVMFragment : Fragment() {
     private fun displayResult(books: List<Book>) {
         val recyclerView = binding.recyclerViewBooks
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val booksAdapter = BooksAdapter(books = books)
+        val booksAdapter = BooksAdapter()
+        booksAdapter.setData(books)
         recyclerView.adapter = booksAdapter
     }
 }

@@ -3,6 +3,7 @@ package com.example.librarymanagementapp
 import com.example.librarymanagementapp.enums.Genre
 import com.example.librarymanagementapp.models.Book
 import com.example.librarymanagementapp.models.BookOrder
+import com.example.librarymanagementapp.models.User
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -11,10 +12,17 @@ import kotlin.random.Random
 object LibraryDB {
     private val books = initBooks()
     private val bookOrders = initBookOrders()
+    var isUserSignedIn = false
 
     suspend fun loadBooks(): List<Book>? {
         delay(2000)
-        return books.filter { it.isAvailable }
+        return if (Random.nextBoolean()) books.filter { it.isAvailable } else null
+    }
+
+    suspend fun loadUsers(): List<User> {
+
+        delay(2000)
+        return if (Random.nextBoolean()) listOf(User()) else emptyList()
     }
 
     suspend fun getBookOrders(): List<BookOrder>? {

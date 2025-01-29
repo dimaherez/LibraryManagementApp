@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:text="Loading..."
         android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <androidx.recyclerview.widget.RecyclerView

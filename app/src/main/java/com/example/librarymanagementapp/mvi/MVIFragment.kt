@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 class MVIFragment : Fragment() {
     private lateinit var binding: FragmentMviBinding
     private val viewModel by viewModels<ViewModelMVI>()
+    private val adapter = BooksAdapter()
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
@@ -34,7 +35,6 @@ class MVIFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.processIntent(MyIntent.FetchData)
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -46,22 +46,23 @@ class MVIFragment : Fragment() {
 
         binding.borrowBtn.setOnClickListener {
             viewModel.processIntent(MyIntent.BorrowBook)
-            recyclerView.adapter?.notifyDataSetChanged()
         }
 
         binding.returnBtn.setOnClickListener {
             viewModel.processIntent(MyIntent.ReturnBook)
-            recyclerView.adapter?.notifyDataSetChanged()
         }
+        binding.recyclerViewBooks.adapter = adapter
     }
 
     private fun handleState(state: UiState) {
+        println("qweqwe handleState $state")
         when (state) {
             is UiState.Loading -> {
                 binding.loadingTv.visibility = View.VISIBLE
             }
             is UiState.Data -> {
-                displayResult(state.data)
+                println("qweqwe handleState ${state.data.first()}")
+                adapter.setData(state.data)
                 binding.loadingTv.visibility = View.GONE
                 binding.borrowBtn.isEnabled = true
                 binding.returnBtn.isEnabled = true
@@ -72,13 +73,5 @@ class MVIFragment : Fragment() {
             }
         }
     }
-
-    private fun displayResult(books: List<Book>) {
-        recyclerView = binding.recyclerViewBooks
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        val booksAdapter = BooksAdapter(books = books)
-        recyclerView.adapter = booksAdapter
-    }
-
 
 }

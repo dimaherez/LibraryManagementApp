@@ -1,18 +1,16 @@
 package com.example.librarymanagementapp.mvp
 
 import com.example.librarymanagementapp.LibraryDB
-import com.example.librarymanagementapp.UiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 object Presenter {
 
-    private var view: ((UiState) -> Unit)? = null
+    private var view: ShowBookView? = null
 
-    fun attachView(view: (UiState) -> Unit) {
-        this.view = view
+    fun attachView(mvpFragment: MVPFragment) {
+        view = mvpFragment
     }
 
     fun detachView() {
@@ -20,15 +18,15 @@ object Presenter {
     }
 
     fun loadBooks() {
-        view?.invoke(UiState.Loading)
+        println("qweqwe loadBooks $view")
+        view?.showLoading()
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                val books = withContext(Dispatchers.IO) {
-                    LibraryDB.loadBooks()
-                }
-                view?.invoke(UiState.Data(books!!))
+                println("qweqwe  try { $view")
+                val books = LibraryDB.loadBooks()
+                view?.showBooks(books!!)
             } catch (e: Exception) {
-                view?.invoke(UiState.Error(e.message ?: "An error occurred"))
+                view?.showError(e.message ?: "An error occurred")
             }
         }
     }
