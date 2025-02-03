@@ -12,7 +12,8 @@ data class Book(
     val price: Float,
     var isAvailable: Boolean = false,
     var borrowCount: Int = 0,
-    var availableCount: Int = 0
+    var availableCount: Int = 0,
+    var isFavorite: Boolean = false
 )
 
 

@@ -16,11 +16,11 @@ object LibraryDB {
 
     suspend fun loadBooks(): List<Book>? {
         delay(2000)
-        return if (Random.nextBoolean()) books.filter { it.isAvailable } else null
+//        return books
+        return if (Random.nextBoolean()) books else null
     }
 
     suspend fun loadUsers(): List<User> {
-
         delay(2000)
         return if (Random.nextBoolean()) listOf(User()) else emptyList()
     }
@@ -29,6 +29,13 @@ object LibraryDB {
         delay(2000)
         return bookOrders
     }
+
+    fun updateBook(book: Book) {
+        val index = books.indexOfFirst { it.id == book.id }
+        if (index != -1) { books[index] = book }
+    }
+
+
 
     suspend fun getBooksByRange(start: Int, end: Int): List<Book>? {
         delay(Random.nextLong(100, 3000))
@@ -51,6 +58,12 @@ object LibraryDB {
         return book
     }
 
+    fun toggleFavorite(book: Book) {
+        val ix = books.indexOfFirst { it.id == book.id }
+        books[ix].isFavorite = book.isFavorite
+
+    }
+
     fun findBookByTitle(title: String): Book? =
         books.find { it.title.equals(title, ignoreCase = true) }
 
@@ -69,15 +82,15 @@ object LibraryDB {
         return book
     }
 
-    fun returnBook(title: String): Book? {
-        val book = books.find { it.title == title }
+    fun returnBook(id: Int) {
+        val ix = books.indexOfFirst { it.id == id }
+        books[ix].availableCount += 1
+    }
 
-        if (book?.isAvailable?.not() == true) {
-            book.availableCount += 1
-            book.isAvailable = true
-        }
-
-        return book
+    fun borrowBook(id: Int) {
+        val ix = books.indexOfFirst { it.id == id }
+        if(books[ix].availableCount > 0)
+            books[ix].availableCount -= 1
     }
 
     // Group books by Genre
@@ -109,7 +122,7 @@ object LibraryDB {
         groupByAvailability().flatMap { entry -> entry.value.sortedByDescending { it.price } }
 
     // Count total books by genre
-     fun countByGenre(genre: Genre) = books.count { it.genre == genre }
+    fun countByGenre(genre: Genre) = books.count { it.genre == genre }
 
 
     // Count total books by author
@@ -125,6 +138,13 @@ object LibraryDB {
     suspend fun filterByAvailability(): List<Book> {
         delay(1000)
         return books.filter { it.isAvailable }
+    }
+
+    fun filterBooks(query: String): List<Book>? {
+        return books.filter {
+            it.title.lowercase().contains(query.lowercase()) ||
+                    it.author.lowercase().contains(query.lowercase())
+        }
     }
 
     // Extract all unique authors
@@ -147,7 +167,7 @@ object LibraryDB {
     }
 
     private fun initBooks(): MutableList<Book> {
-        val books =  mutableListOf(
+        val books = mutableListOf(
             Book(
                 id = 1,
                 title = "The Great Gatsby",
@@ -227,7 +247,7 @@ object LibraryDB {
             )
         )
 
-        books.addAll(generateRandomBooks(30))
+//        books.addAll(generateRandomBooks(30))
 
         return books
     }
@@ -242,7 +262,7 @@ object LibraryDB {
 
         return List(n) { index ->
             Book(
-                id = index+10,
+                id = index + 10,
                 title = "Title $index",
                 genre = Genre.values().random(),
                 author = "Author $index",
@@ -265,5 +285,9 @@ object LibraryDB {
             BookOrder(books.random(), LocalDateTime.now().minusMinutes(2)),
         )
     }
+
+
+
+
 }
 

@@ -5,24 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.librarymanagementapp.UiState
 import com.example.librarymanagementapp.databinding.FragmentMviBinding
-import com.example.librarymanagementapp.models.Book
-import com.example.librarymanagementapp.BooksAdapter
 import kotlinx.coroutines.launch
 
 class MVIFragment : Fragment() {
     private lateinit var binding: FragmentMviBinding
     private val viewModel by viewModels<ViewModelMVI>()
-    private val adapter = BooksAdapter()
-    private lateinit var recyclerView: RecyclerView
+    private val booksAdapter = MVIAdapter(
+        onBorrowClick = { id -> viewModel.processIntent(MyIntent.BorrowBook(id))},
+        onReturnClick = {id -> viewModel.processIntent(MyIntent.ReturnBook(id))}
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,34 +42,50 @@ class MVIFragment : Fragment() {
             }
         }
 
-        binding.borrowBtn.setOnClickListener {
-            viewModel.processIntent(MyIntent.BorrowBook)
+//        binding.borrowBtn.setOnClickListener {
+//            viewModel.processIntent(MyIntent.BorrowBook(1))
+//        }
+//
+//        binding.returnBtn.setOnClickListener {
+//            viewModel.processIntent(MyIntent.ReturnBook(1))
+//        }
+
+        binding.swipe.setOnRefreshListener {
+            handleSwipe()
         }
 
-        binding.returnBtn.setOnClickListener {
-            viewModel.processIntent(MyIntent.ReturnBook)
-        }
-        binding.recyclerViewBooks.adapter = adapter
+        binding.recyclerViewBooks.adapter = booksAdapter
     }
 
     private fun handleState(state: UiState) {
-        println("qweqwe handleState $state")
         when (state) {
             is UiState.Loading -> {
-                binding.loadingTv.visibility = View.VISIBLE
+                binding.progressLoader.visibility = View.VISIBLE
+                if (state.status == LoadingStatus.AFTER_ERROR) {
+                    binding.recyclerViewBooks.isVisible = false // don't show list while loading if last fetching caused an error
+                } else {
+                    binding.recyclerViewBooks.isVisible = true // show list while loading after successful fetching
+                }
             }
             is UiState.Data -> {
-                println("qweqwe handleState ${state.data.first()}")
-                adapter.setData(state.data)
-                binding.loadingTv.visibility = View.GONE
-                binding.borrowBtn.isEnabled = true
-                binding.returnBtn.isEnabled = true
+                booksAdapter.setData(state.data)
+                binding.progressLoader.visibility = View.GONE
+                binding.recyclerViewBooks.isVisible = true
             }
             is UiState.Error -> {
-                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
-                binding.loadingTv.visibility = View.GONE
+                Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                binding.progressLoader.visibility = View.GONE
+                binding.recyclerViewBooks.isVisible = false
             }
         }
     }
 
+
+
+    private fun handleSwipe() {
+        if(viewModel.uiState.value !is UiState.Loading) {
+            viewModel.fetchBooks()
+        }
+        binding.swipe.isRefreshing = false
+    }
 }

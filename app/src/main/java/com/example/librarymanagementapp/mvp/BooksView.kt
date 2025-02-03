@@ -2,7 +2,7 @@ package com.example.librarymanagementapp.mvp
 
 import com.example.librarymanagementapp.models.Book
 
-interface ShowBookView : BaseView {
+interface BooksView : BaseView {
 
     fun showBooks(books: List<Book>)
 

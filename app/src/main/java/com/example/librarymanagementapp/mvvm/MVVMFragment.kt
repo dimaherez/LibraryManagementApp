@@ -5,22 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.librarymanagementapp.databinding.FragmentMvvmBinding
 import com.example.librarymanagementapp.models.Book
-import com.example.librarymanagementapp.UiState
-import com.example.librarymanagementapp.BooksAdapter
-import kotlinx.coroutines.launch
+import com.example.librarymanagementapp.enums.Genre
+import java.time.LocalDate
+import kotlin.random.Random
 
 
 class MVVMFragment : Fragment() {
     private lateinit var binding: FragmentMvvmBinding
     private val viewModel by viewModels<ViewModelMVVM>()
+    private val booksAdapter = MVVMAdapter()
+
+    private var testCounter = 0 // Counter for test titles
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,14 +33,20 @@ class MVVMFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.fetchBooks()
+        viewModel.data.observe(viewLifecycleOwner) { books ->
+            processBooks(books)
+        }
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    handleState(state)
-                }
-            }
+        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+            setLoading(isLoading)
+        }
+
+        viewModel.createLoading.observe(viewLifecycleOwner) { isLoading ->
+            setCreateLoading(isLoading)
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { message ->
+            showError(message)
         }
 
         binding.sortBtn.setOnClickListener {
@@ -50,31 +56,70 @@ class MVVMFragment : Fragment() {
         binding.filterBtn.setOnClickListener {
             viewModel.filterBooks()
         }
+
+        binding.createBtn.setOnClickListener {
+            createBook()
+        }
+
+        binding.swipe.setOnRefreshListener {
+            handleSwipe()
+        }
+
+        binding.recyclerViewBooks.adapter = booksAdapter
     }
 
-    private fun handleState(state: UiState) {
-        when (state) {
-            is UiState.Loading -> {
-                binding.loadingTv.visibility = View.VISIBLE
-            }
-            is UiState.Data -> {
-                displayResult(state.data)
-                binding.loadingTv.visibility = View.GONE
-                binding.sortBtn.isEnabled = true
-                binding.filterBtn.isEnabled = true
-            }
-            is UiState.Error -> {
-                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
-                binding.loadingTv.visibility = View.GONE
-            }
+    private fun createBook() {
+        viewModel.createBook(
+            Book(
+                id = Random.nextInt(1000, 1999),
+                title = "TEST BOOK ${testCounter++}",
+                genre = Genre.FICTION,
+                author = "Author",
+                releaseDate = LocalDate.of(1949, 6, 8),
+                price = 14.99f,
+                isAvailable = true,
+                borrowCount = 0,
+                availableCount = 5
+            )
+        )
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressLoader.visibility = View.VISIBLE
+            binding.recyclerViewBooks.isVisible = true
+        }
+        else {
+            binding.progressLoader.visibility = View.GONE
         }
     }
 
-    private fun displayResult(books: List<Book>) {
-        val recyclerView = binding.recyclerViewBooks
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        val booksAdapter = BooksAdapter()
+    private fun setCreateLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.createLoading.visibility = View.VISIBLE
+        }
+        else {
+            binding.createLoading.visibility = View.GONE
+            //Toast.makeText(requireContext(), "Book created!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showError(message: String) {
+        if (viewModel.data.value?.isEmpty() == true) {
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            binding.recyclerViewBooks.isVisible = false
+        }
+    }
+
+    private fun processBooks(books: List<Book>) {
         booksAdapter.setData(books)
-        recyclerView.adapter = booksAdapter
+        binding.recyclerViewBooks.isVisible = true
+    }
+
+    private fun handleSwipe() {
+        if (viewModel.loading.value == false) {
+            viewModel.fetchBooks()
+        }
+        binding.swipe.isRefreshing = false
     }
 }
