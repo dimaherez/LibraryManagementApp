@@ -1,7 +1,8 @@
 package com.example.domain.use_cases
 
-import com.example.domain.di.DiReplacer
+import com.example.domain.repository.LibraryRepo
+import javax.inject.Inject
 
-class ReturnBookUseCase {
-    fun returnBook(id: Int) = DiReplacer.libraryRepo.returnBook(id)
+class ReturnBookUseCase @Inject constructor(private val libraryRepo: LibraryRepo) {
+    fun returnBook(id: Int) = libraryRepo.returnBook(id)
 }

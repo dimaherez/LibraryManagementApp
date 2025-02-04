@@ -1,11 +1,11 @@
 package com.example.data
 
-import com.example.domain.di.DiReplacer
 import com.example.domain.models.Book
 import com.example.domain.repository.LibraryRepo
 import kotlinx.coroutines.delay
+import javax.inject.Inject
 
-class LibraryRepoImpl: LibraryRepo {
+class LibraryRepoImpl @Inject constructor(): LibraryRepo {
 
     override suspend fun fetchBooks(): List<Book> {
         delay(3000)

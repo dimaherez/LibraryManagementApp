@@ -11,11 +11,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.data.Repo
 import com.example.librarymanagementapp.databinding.FragmentMviBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MVIFragment : Fragment() {
     private lateinit var binding: FragmentMviBinding
     private val viewModel by viewModels<ViewModelMVI>()
@@ -34,8 +35,6 @@ class MVIFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Repo.init()
 
 
         lifecycleScope.launch {
