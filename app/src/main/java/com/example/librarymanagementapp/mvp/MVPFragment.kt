@@ -10,12 +10,12 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.example.librarymanagementapp.databinding.FragmentMvpBinding
-import com.example.librarymanagementapp.models.Book
+import com.example.domain.models.Book
 
 
 class MVPFragment : Fragment(), BooksView {
     private lateinit var binding: FragmentMvpBinding
-    private val booksAdapter = MVPAdapter { book: Book ->  toggleFavorite(book) }
+    private val booksAdapter = MVPAdapter { book: com.example.domain.models.Book ->  toggleFavorite(book) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +52,7 @@ class MVPFragment : Fragment(), BooksView {
         binding.recyclerViewBooks.adapter = booksAdapter
     }
 
-    private fun showBookDetailsDialog(book: Book) {
+    private fun showBookDetailsDialog(book: com.example.domain.models.Book) {
         BookDetailsDialogFragment.newInstance(book).show(parentFragmentManager, "bookDetails")
     }
 
@@ -61,7 +61,7 @@ class MVPFragment : Fragment(), BooksView {
         Presenter.detachView()
     }
 
-    override fun showBooks(books: List<Book>) {
+    override fun showBooks(books: List<com.example.domain.models.Book>) {
         Log.d("mylog", "showBooks()")
         booksAdapter.setData(books)
 
@@ -84,7 +84,7 @@ class MVPFragment : Fragment(), BooksView {
         binding.searchView.clearFocus()
     }
 
-    private fun toggleFavorite(book: Book) {
+    private fun toggleFavorite(book: com.example.domain.models.Book) {
         Presenter.toggleFavorite(book)
     }
 

@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.librarymanagementapp.R
-import com.example.librarymanagementapp.models.Book
+import com.example.domain.models.Book
 
-class MVVMAdapter(private val itemClickListener: (Book) -> Unit = {}) :
+class MVVMAdapter(private val itemClickListener: (com.example.domain.models.Book) -> Unit = {}) :
     RecyclerView.Adapter<MVVMAdapter.BookViewHolder>() {
 
-    private var books: List<Book> = emptyList()
+    private var books: List<com.example.domain.models.Book> = emptyList()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<Book>) {
+    fun setData(data: List<com.example.domain.models.Book>) {
         books = data
         notifyDataSetChanged()
     }

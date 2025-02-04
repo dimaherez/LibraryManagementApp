@@ -1,4 +1,4 @@
-package com.example.librarymanagementapp.enums
+package com.example.domain.enums
 
 enum class Genre {
     FICTION,

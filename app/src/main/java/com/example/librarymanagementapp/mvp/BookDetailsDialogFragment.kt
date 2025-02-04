@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.example.librarymanagementapp.databinding.FragmentDetailsBinding
-import com.example.librarymanagementapp.models.Book
+import com.example.domain.models.Book
 
 class BookDetailsDialogFragment : DialogFragment() {
     private lateinit var binding: FragmentDetailsBinding
 
     companion object {
-        fun newInstance(book: Book): BookDetailsDialogFragment {
+        fun newInstance(book: com.example.domain.models.Book): BookDetailsDialogFragment {
             val fragment = BookDetailsDialogFragment()
             val args = Bundle().apply { putString("book_info", book.toString()) }
 

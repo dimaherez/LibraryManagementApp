@@ -8,16 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.librarymanagementapp.models.Book
+import com.example.domain.models.Book
 
 class MVIAdapter(private val onBorrowClick: (Int) -> Unit = {},
                  private val onReturnClick: (Int) -> Unit = {}) :
     RecyclerView.Adapter<MVIAdapter.BookViewHolder>() {
 
-    private var books: List<Book> = emptyList()
+    private var books: List<com.example.domain.models.Book> = emptyList()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<Book>) {
+    fun setData(data: List<com.example.domain.models.Book>) {
         books = data
         notifyDataSetChanged()
     }

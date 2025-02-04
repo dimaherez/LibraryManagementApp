@@ -1,6 +1,7 @@
 package com.example.librarymanagementapp.mvi
 
-import com.example.librarymanagementapp.models.Book
+import com.example.domain.models.Book
+import kotlinx.coroutines.flow.Flow
 
 sealed class UiState {
     data class Loading(val status: LoadingStatus) : UiState()

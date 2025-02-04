@@ -1,7 +1,11 @@
 package com.example.librarymanagementapp.mvi
 
 import androidx.lifecycle.ViewModel
-import com.example.librarymanagementapp.LibraryDB
+import androidx.lifecycle.viewModelScope
+import com.example.data.Repo
+import com.example.domain.use_cases.BorrowBookUseCase
+import com.example.domain.use_cases.FetchBooksUseCase
+import com.example.domain.use_cases.ReturnBookUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -34,9 +38,9 @@ class ViewModelMVI : ViewModel() {
             _uiState.value = UiState.Loading(LoadingStatus.AFTER_SUCCESS) // Loading is after successful fetching data
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val response = LibraryDB.loadBooks()
+            val response = FetchBooksUseCase().fetchBooks()
             if (response != null) {
-                _uiState.value = UiState.Data(response.toList())
+                _uiState.value = UiState.Data(response)
             } else {
                 _uiState.value = UiState.Error("List is null")
             }
@@ -55,12 +59,12 @@ class ViewModelMVI : ViewModel() {
                         val ix = currentState.data.indexOfFirst { book -> book.id == id }
                         if (it[ix].availableCount > 0) {
                             it[ix] = it[ix].copy(availableCount = it[ix].availableCount - 1)
-                            LibraryDB.updateBook(it[ix])
+//                            BorrowBookUseCase().borrowBook(it[ix].id)
                         }
                     })
-            } else {
-                LibraryDB.borrowBook(id)
             }
+
+            BorrowBookUseCase().borrowBook(id)
         }
     }
 
@@ -89,11 +93,11 @@ class ViewModelMVI : ViewModel() {
                     currentState.data.toMutableList().also {
                         val ix = currentState.data.indexOfFirst { book -> book.id == id }
                         it[ix] = it[ix].copy(availableCount = it[ix].availableCount + 1)
-                        LibraryDB.updateBook(it[ix])
+//                        ReturnBookUseCase().returnBook(it[ix].id)
                     })
-            } else {
-                LibraryDB.returnBook(id)
             }
+
+            ReturnBookUseCase().returnBook(id)
         }
 
 

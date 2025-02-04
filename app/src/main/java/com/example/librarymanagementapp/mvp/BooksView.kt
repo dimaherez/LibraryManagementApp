@@ -1,10 +1,10 @@
 package com.example.librarymanagementapp.mvp
 
-import com.example.librarymanagementapp.models.Book
+import com.example.domain.models.Book
 
 interface BooksView : BaseView {
 
-    fun showBooks(books: List<Book>)
+    fun showBooks(books: List<com.example.domain.models.Book>)
 
     fun showError(message: String)
 

@@ -1,13 +1,11 @@
 package com.example.librarymanagementapp.mvp
 
 import android.util.Log
+import com.example.domain.models.Book
 import com.example.librarymanagementapp.LibraryDB
-import com.example.librarymanagementapp.models.Book
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 object Presenter {
 

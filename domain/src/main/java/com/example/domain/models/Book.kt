@@ -1,6 +1,6 @@
-package com.example.librarymanagementapp.models
+package com.example.domain.models
 
-import com.example.librarymanagementapp.enums.Genre
+import com.example.domain.enums.Genre
 import java.time.LocalDate
 
 data class Book(

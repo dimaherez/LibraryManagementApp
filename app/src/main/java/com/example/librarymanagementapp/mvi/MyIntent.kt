@@ -1,7 +1,5 @@
 package com.example.librarymanagementapp.mvi
 
-import com.example.librarymanagementapp.models.Book
-
 
 sealed interface MyIntent {
     data object FetchData : MyIntent

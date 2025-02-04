@@ -1,9 +1,7 @@
 package com.example.librarymanagementapp
 
-import com.example.librarymanagementapp.enums.Genre
-import com.example.librarymanagementapp.models.Book
-import com.example.librarymanagementapp.models.BookOrder
-import com.example.librarymanagementapp.models.User
+import com.example.domain.enums.Genre
+import com.example.domain.models.Book
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -12,20 +10,15 @@ import kotlin.random.Random
 object LibraryDB {
     private val books = initBooks()
     private val bookOrders = initBookOrders()
-    var isUserSignedIn = false
 
     suspend fun loadBooks(): List<Book>? {
         delay(2000)
-//        return books
-        return if (Random.nextBoolean()) books else null
+        return books
+//        return if (Random.nextBoolean()) books else null
     }
 
-    suspend fun loadUsers(): List<User> {
-        delay(2000)
-        return if (Random.nextBoolean()) listOf(User()) else emptyList()
-    }
 
-    suspend fun getBookOrders(): List<BookOrder>? {
+    suspend fun getBookOrders(): List<com.example.domain.models.BookOrder>? {
         delay(2000)
         return bookOrders
     }
@@ -69,18 +62,18 @@ object LibraryDB {
 
     fun findBooksByGenre(genre: Genre): List<Book> = books.filter { it.genre == genre }
 
-    fun borrowBook(title: String): Book? {
-        val book = findBookByTitle(title)
-
-        if (book !== null) {
-            book.borrowCount += 1
-            book.availableCount -= 1
-            book.isAvailable = (book.availableCount != 0)
-
-            bookOrders.add(BookOrder(book, LocalDateTime.now()))
-        }
-        return book
-    }
+//    fun borrowBook(title: String): Book? {
+//        val book = findBookByTitle(title)
+//
+//        if (book !== null) {
+//            book.borrowCount += 1
+//            book.availableCount -= 1
+//            book.isAvailable = (book.availableCount != 0)
+//
+//            bookOrders.add(com.example.domain.models.BookOrder(book, LocalDateTime.now()))
+//        }
+//        return book
+//    }
 
     fun returnBook(id: Int) {
         val ix = books.indexOfFirst { it.id == id }
@@ -275,14 +268,32 @@ object LibraryDB {
         }
     }
 
-    private fun initBookOrders(): MutableList<BookOrder> {
+    private fun initBookOrders(): MutableList<com.example.domain.models.BookOrder> {
         return mutableListOf(
-            BookOrder(books.random(), LocalDateTime.now().minusMinutes(10)),
-            BookOrder(books.random(), LocalDateTime.now().minusMinutes(7)),
-            BookOrder(books.random(), LocalDateTime.now().minusMinutes(5)),
-            BookOrder(books.random(), LocalDateTime.now().minusMinutes(3)),
-            BookOrder(books.random(), LocalDateTime.now().minusMinutes(3)),
-            BookOrder(books.random(), LocalDateTime.now().minusMinutes(2)),
+            com.example.domain.models.BookOrder(
+                books.random(),
+                LocalDateTime.now().minusMinutes(10)
+            ),
+            com.example.domain.models.BookOrder(
+                books.random(),
+                LocalDateTime.now().minusMinutes(7)
+            ),
+            com.example.domain.models.BookOrder(
+                books.random(),
+                LocalDateTime.now().minusMinutes(5)
+            ),
+            com.example.domain.models.BookOrder(
+                books.random(),
+                LocalDateTime.now().minusMinutes(3)
+            ),
+            com.example.domain.models.BookOrder(
+                books.random(),
+                LocalDateTime.now().minusMinutes(3)
+            ),
+            com.example.domain.models.BookOrder(
+                books.random(),
+                LocalDateTime.now().minusMinutes(2)
+            ),
         )
     }
 

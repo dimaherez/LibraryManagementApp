@@ -4,11 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import com.example.domain.enums.Genre
+import com.example.domain.models.Book
 import com.example.librarymanagementapp.LibraryDB
-import com.example.librarymanagementapp.enums.Genre
-import com.example.librarymanagementapp.models.Book
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random

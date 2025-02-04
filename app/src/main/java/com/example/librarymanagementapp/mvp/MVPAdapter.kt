@@ -4,23 +4,20 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.librarymanagementapp.R
-import com.example.librarymanagementapp.models.Book
-import java.util.Locale
+import com.example.domain.models.Book
 
-class MVPAdapter(private val itemClickListener: (Book) -> Unit = {}) :
+class MVPAdapter(private val itemClickListener: (com.example.domain.models.Book) -> Unit = {}) :
     RecyclerView.Adapter<MVPAdapter.BookViewHolder>() {
 
-    private var books: List<Book> = emptyList()
-    private var initBooks: List<Book> = emptyList()
+    private var books: List<com.example.domain.models.Book> = emptyList()
+    private var initBooks: List<com.example.domain.models.Book> = emptyList()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<Book>) {
+    fun setData(data: List<com.example.domain.models.Book>) {
         initBooks = data
         books = data
         notifyDataSetChanged()

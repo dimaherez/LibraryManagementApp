@@ -9,8 +9,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.librarymanagementapp.databinding.FragmentMvvmBinding
-import com.example.librarymanagementapp.models.Book
-import com.example.librarymanagementapp.enums.Genre
+import com.example.domain.models.Book
+import com.example.domain.enums.Genre
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -70,10 +70,10 @@ class MVVMFragment : Fragment() {
 
     private fun createBook() {
         viewModel.createBook(
-            Book(
+            com.example.domain.models.Book(
                 id = Random.nextInt(1000, 1999),
                 title = "TEST BOOK ${testCounter++}",
-                genre = Genre.FICTION,
+                genre = com.example.domain.enums.Genre.FICTION,
                 author = "Author",
                 releaseDate = LocalDate.of(1949, 6, 8),
                 price = 14.99f,
@@ -111,7 +111,7 @@ class MVVMFragment : Fragment() {
         }
     }
 
-    private fun processBooks(books: List<Book>) {
+    private fun processBooks(books: List<com.example.domain.models.Book>) {
         booksAdapter.setData(books)
         binding.recyclerViewBooks.isVisible = true
     }
