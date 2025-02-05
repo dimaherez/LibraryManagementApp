@@ -1,4 +1,4 @@
-package com.example.data.di
+package com.example.librarymanagementapp.di
 
 import com.example.data.LibraryRepoImpl
 import com.example.domain.repository.LibraryRepo
