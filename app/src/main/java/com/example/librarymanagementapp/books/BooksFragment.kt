@@ -1,4 +1,4 @@
-package com.example.librarymanagementapp.mvi
+package com.example.librarymanagementapp.books
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,31 +11,44 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.librarymanagementapp.databinding.FragmentMviBinding
+import androidx.navigation.fragment.findNavController
+import com.example.domain.models.Book
+import com.example.librarymanagementapp.NavGraphDirections
+import com.example.librarymanagementapp.adapters.BooksRvAdapter
+import com.example.librarymanagementapp.databinding.FragmentBooksBinding
+import com.example.librarymanagementapp.mvi.UiState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MVIFragment : Fragment() {
-    private lateinit var binding: FragmentMviBinding
-    private val viewModel by viewModels<ViewModelMVI>()
-    private val booksAdapter = MVIAdapter(
-        onBorrowClick = { id -> viewModel.processIntent(MyIntent.BorrowBook(id))},
-        onReturnClick = {id -> viewModel.processIntent(MyIntent.ReturnBook(id))}
+class BooksFragment : Fragment() {
+    private lateinit var binding: FragmentBooksBinding
+    private val viewModel by viewModels<BooksViewModel>()
+
+    private val booksAdapter = BooksRvAdapter(
+        onFavoriteCLick = { id -> toggleFavorite(id) },
+        onInfoClick = { book -> navigateToInfoFragment(book) }
     )
+
+    private fun toggleFavorite(id: Int) {
+        viewModel.processIntent(BooksIntent.SetFavoriteBook(id))
+    }
+
+    private fun navigateToInfoFragment(book: Book) {
+        val action = BooksFragmentDirections.actionBooksFragmentToBookInfoFragment(book = book)
+        findNavController().navigate(action)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMviBinding.inflate(layoutInflater)
+        binding = FragmentBooksBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -45,16 +58,12 @@ class MVIFragment : Fragment() {
             }
         }
 
-//        binding.borrowBtn.setOnClickListener {
-//            viewModel.processIntent(MyIntent.BorrowBook(1))
-//        }
-//
-//        binding.returnBtn.setOnClickListener {
-//            viewModel.processIntent(MyIntent.ReturnBook(1))
-//        }
-
         binding.swipe.setOnRefreshListener {
             handleSwipe()
+        }
+
+        binding.btnAlertDialog.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalMyDialogFragment())
         }
 
         binding.recyclerViewBooks.adapter = booksAdapter
@@ -64,11 +73,7 @@ class MVIFragment : Fragment() {
         when (state) {
             is UiState.Loading -> {
                 binding.progressLoader.visibility = View.VISIBLE
-                if (state.status == LoadingStatus.AFTER_ERROR) {
-                    binding.recyclerViewBooks.isVisible = false // don't show list while loading if last fetching caused an error
-                } else {
-                    binding.recyclerViewBooks.isVisible = true // show list while loading after successful fetching
-                }
+                binding.recyclerViewBooks.isVisible = false
             }
             is UiState.Data -> {
                 booksAdapter.setData(state.data)

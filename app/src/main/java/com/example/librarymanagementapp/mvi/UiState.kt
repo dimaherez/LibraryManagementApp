@@ -4,7 +4,7 @@ import com.example.domain.models.Book
 import kotlinx.coroutines.flow.Flow
 
 sealed class UiState {
-    data class Loading(val status: LoadingStatus) : UiState()
+    data object Loading : UiState()
     data class Data(val data: List<Book>) : UiState()
     data class Error(val message: String) : UiState()
 }

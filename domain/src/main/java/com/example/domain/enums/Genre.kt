@@ -7,3 +7,14 @@ enum class Genre {
     MYSTERY,
     BIOGRAPHY,
 }
+
+fun Genre.string() =
+    when(this) {
+        Genre.FICTION -> "Fiction"
+        Genre.FANTASY -> "Fantasy"
+        Genre.SCIENCE_FICTION -> "Science Fiction"
+        Genre.MYSTERY -> "Mystery"
+        Genre.BIOGRAPHY -> "Biography"
+    }
+
+

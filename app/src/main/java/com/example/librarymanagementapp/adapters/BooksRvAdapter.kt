@@ -1,21 +1,23 @@
-package com.example.librarymanagementapp.mvvm
+package com.example.librarymanagementapp.adapters
 
+import android.widget.ImageButton
+import com.example.librarymanagementapp.R
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.librarymanagementapp.R
 import com.example.domain.models.Book
 
-class MVVMAdapter(private val itemClickListener: (com.example.domain.models.Book) -> Unit = {}) :
-    RecyclerView.Adapter<MVVMAdapter.BookViewHolder>() {
+class BooksRvAdapter(private val onFavoriteCLick: (Int) -> Unit = {},
+                     private val onInfoClick: (book: Book) -> Unit = {}) :
+    RecyclerView.Adapter<BooksRvAdapter.BookViewHolder>() {
 
-    private var books: List<com.example.domain.models.Book> = emptyList()
+    private var books: List<Book> = emptyList()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<com.example.domain.models.Book>) {
+    fun setData(data: List<Book>) {
         books = data
         notifyDataSetChanged()
     }
@@ -24,10 +26,12 @@ class MVVMAdapter(private val itemClickListener: (com.example.domain.models.Book
         val titleTextView: TextView = itemView.findViewById(R.id.textViewTitle)
         val authorTextView: TextView = itemView.findViewById(R.id.textViewAuthor)
         val borrowCount: TextView = itemView.findViewById(R.id.borrowCount)
+        val favoriteBtn: ImageButton = itemView.findViewById(R.id.favoriteBtn)
+        val infoBtn: ImageButton = itemView.findViewById(R.id.infoBtn)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_book, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.mvi_item_book, parent, false)
         return BookViewHolder(view)
     }
 
@@ -37,14 +41,20 @@ class MVVMAdapter(private val itemClickListener: (com.example.domain.models.Book
         holder.authorTextView.text = book.author
         holder.borrowCount.text = "Available: ${book.availableCount}"
 
-        holder.itemView.setOnClickListener {
-            itemClickListener(book)
+        if ( books[position].isFavorite) holder.favoriteBtn.setImageResource(R.drawable.baseline_star_24)
+        else holder.favoriteBtn.setImageResource(R.drawable.baseline_star_border_24)
+
+        holder.favoriteBtn.setOnClickListener {
+            onFavoriteCLick(book.id)
+        }
+
+        holder.infoBtn.setOnClickListener {
+            onInfoClick(book)
         }
     }
 
     override fun getItemCount(): Int {
         return books.size
     }
-
 
 }

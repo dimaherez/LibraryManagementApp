@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize")
 
     id ("kotlin-kapt")
     id("com.google.dagger.hilt.android")

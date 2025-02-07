@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
 
 plugins {
     alias(libs.plugins.android.application)
@@ -6,6 +5,7 @@ plugins {
 
     id ("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id ("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -55,15 +55,12 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation(libs.androidx.lifecycle.extensions)
-
     implementation (libs.androidx.recyclerview)
-
-    // View Binding
     implementation (libs.androidx.viewbinding)
 
     // Coroutines
@@ -74,10 +71,10 @@ dependencies {
     implementation (libs.androidx.lifecycle.runtime.ktx)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation (libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.extensions)
 
     // Swipe to refresh
     implementation (libs.androidx.swiperefreshlayout)
-
 
     // Dependency injection
     implementation("com.google.dagger:hilt-android:2.48")

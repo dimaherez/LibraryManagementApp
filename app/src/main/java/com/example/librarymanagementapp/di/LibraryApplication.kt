@@ -1,4 +1,4 @@
-package com.example.librarymanagementapp
+package com.example.librarymanagementapp.di
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -1,49 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".books.BooksFragment"
     android:orientation="vertical"
-    tools:context=".mvvm.MVVMFragment">
+    android:id="@+id/fragment_books">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/sortBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sort"
-            android:layout_margin="1dp"/>
-
-        <Button
-            android:id="@+id/filterBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Filter"
-            android:layout_margin="1dp"/>
-
-        <Button
-            android:id="@+id/createBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create book"
-            android:layout_margin="1dp" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/createLoading"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btnAlertDialog"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Creating book..."
-        android:textSize="14sp"
-        android:gravity="end"
-        android:visibility="gone"/>
+        android:text = "AlertDialog"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -70,10 +39,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewBooks"
             android:layout_width="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
+            android:padding="16dp" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 

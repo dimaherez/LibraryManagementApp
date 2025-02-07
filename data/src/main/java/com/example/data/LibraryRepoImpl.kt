@@ -28,4 +28,9 @@ class LibraryRepoImpl @Inject constructor(): LibraryRepo {
 //        if (index != -1) { BooksDB.books[index] = book }
     }
 
+    override fun setFavoriteBook(id: Int) {
+        val ix = BooksDB.books.indexOfFirst { it.id == id }
+        BooksDB.books[ix].isFavorite = BooksDB.books[ix].isFavorite.not()
+    }
+
 }

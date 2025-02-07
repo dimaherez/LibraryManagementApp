@@ -8,4 +8,5 @@ interface LibraryRepo {
     fun borrowBook(id: Int)
     fun returnBook(id: Int)
     fun updateBook(id: Int)
+    fun setFavoriteBook(id: Int)
 }
