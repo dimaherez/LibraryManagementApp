@@ -1,16 +1,13 @@
 package com.example.librarymanagementapp.mvi
 
 import com.example.domain.models.Book
-import kotlinx.coroutines.flow.Flow
 
 sealed class UiState {
     data object Loading : UiState()
-    data class Data(val data: List<Book>) : UiState()
+    data class Books(val books: List<Book>) : UiState()
+    data class BookData(val book: Book?): UiState()
+    data class BooksRecommendation(val data: List<Book>): UiState()
+    data class Trending(val books: List<Book>, val authors: List<String>, val genres: List<String>): UiState()
+    data class FavoriteBooks(val favoriteBooks: List<Book>, val recommendations: List<Book>): UiState()
     data class Error(val message: String) : UiState()
-}
-
-enum class LoadingStatus {
-    AFTER_ERROR,
-    AFTER_SUCCESS,
-    INITIAL
 }

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Buttons -->
+    <style name="style_info_button" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/baseline_info_24</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="style_favorite_button" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">#00ffffff</item>
+        <item name="android:src">@drawable/baseline_star_border_24</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="style_radio_button" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:button">@null</item>
+        <item name="android:background">@null</item>
+        <item name="android:drawableStart">@drawable/radio_button_bg</item>
+        <item name="android:drawablePadding">8dp</item>
+    </style>
+
+    <style name="style_default_button">
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+
+    <!-- Images -->
+    <style name="style_book_image_placeholder">
+        <item name="android:src">@drawable/book_cover_placeholder</item>
+        <item name="android:layout_height">130dp</item>
+        <item name="android:layout_width">100dp</item>
+    </style>
+
+
+
+    <!-- Text -->
+    <style name="style_text">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="style_text.12">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="style_text.14">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="style_text.16_bold">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="style_text.24_bold">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

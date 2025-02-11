@@ -2,123 +2,136 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:scrollbars="vertical"
     tools:context=".info.BookInfoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
-        <Button
-            android:id="@+id/btnAlertDialog"
+        <ImageView
+            android:id="@+id/bookImage"
+            style="@style/style_book_image_placeholder"
+            android:contentDescription="@string/book_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AlertDialog"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="100dp" />
 
         <TextView
             android:id="@+id/tvTitle"
+            style="@style/style_text.24_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@id/btnAlertDialog"
-            app:layout_constraintStart_toStartOf="parent"
-            android:paddingBottom="8dp"/>
+            android:paddingBottom="8dp"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvAuthor"
+            style="@style/style_text.16_bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="tvTitle,tvAuthor" />
 
         <ImageButton
             android:id="@+id/btnEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/edit_button"
             android:src="@drawable/baseline_edit_24"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
-            android:id="@+id/tvAuthor"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Author"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="8dp"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/tvGenre"
+            style="@style/style_text.16_bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Genre"
-            app:layout_constraintTop_toBottomOf="@+id/tvAuthor"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="8dp"/>
+            app:layout_constraintStart_toStartOf="@id/barrier"
+            app:layout_constraintTop_toBottomOf="@+id/tvAuthor" />
 
         <TextView
             android:id="@+id/tvReleaseDate"
+            style="@style/style_text.16_bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Release Date"
-            app:layout_constraintTop_toBottomOf="@+id/tvGenre"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="8dp"/>
+            app:layout_constraintStart_toStartOf="@id/barrier"
+            app:layout_constraintTop_toBottomOf="@+id/tvGenre" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="3"
+            app:layout_constraintStart_toEndOf="@id/barrier"
+            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate" />
 
         <TextView
             android:id="@+id/tvPrice"
+            style="@style/style_text.16_bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Price"
-            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDate"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="8dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
         <TextView
             android:id="@+id/tvAvailability"
+            style="@style/style_text.16_bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Availability"
-            app:layout_constraintTop_toBottomOf="@+id/tvPrice"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="8dp"/>
-
-
-        <TextView
-            android:id="@+id/tvRating"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Rating"
-            app:layout_constraintTop_toBottomOf="@+id/tvAvailability"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="8dp"/>
-
+            app:layout_constraintTop_toBottomOf="@+id/tvPrice" />
 
         <TextView
             android:id="@+id/tvDescription"
+            style="@style/style_text.16_bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
-            app:layout_constraintTop_toBottomOf="@+id/tvRating"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="8dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAvailability" />
 
         <Button
             android:id="@+id/btnReviews"
+            style="@style/style_default_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reviews"
-            app:layout_constraintTop_toBottomOf="@+id/tvDescription"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="8dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

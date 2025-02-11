@@ -1,10 +1,9 @@
-package com.example.librarymanagementapp.books
+package com.example.librarymanagementapp.home.all_books
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.domain.use_cases.FetchBooksUseCase
 import com.example.domain.use_cases.SetFavoriteBookUC
-import com.example.librarymanagementapp.mvi.LoadingStatus
+import com.example.librarymanagementapp.home.HomeBaseIntent
 import com.example.librarymanagementapp.mvi.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BooksViewModel @Inject constructor(
+class AllBooksViewModel @Inject constructor(
     private val fetchBooksUseCase: FetchBooksUseCase,
     private val setFavoriteBookUC: SetFavoriteBookUC
 ) : ViewModel() {
@@ -24,13 +23,13 @@ class BooksViewModel @Inject constructor(
     val uiState: StateFlow<UiState> = _uiState
 
     init {
-        processIntent(BooksIntent.FetchData)
+        fetchAllBooks()
     }
 
-    fun processIntent(intent: BooksIntent) {
+    fun processIntent(intent: HomeBaseIntent) {
         when (intent) {
-            is BooksIntent.FetchData -> fetchBooks()
-            is BooksIntent.SetFavoriteBook -> {
+            is AllBooksIntent.FetchAllBooks -> fetchAllBooks()
+            is HomeBaseIntent.SetFavoriteBook -> {
                 setFavoriteBook(intent.id)
             }
         }
@@ -38,11 +37,11 @@ class BooksViewModel @Inject constructor(
 
     private fun setFavoriteBook(id: Int) {
         val currentState = _uiState.value
-        if (currentState is UiState.Data) {
-            val ix = currentState.data.indexOfFirst { it.id == id }
+        if (currentState is UiState.Books) {
+            val ix = currentState.books.indexOfFirst { it.id == id }
 
-            _uiState.value = UiState.Data(
-                currentState.data.toMutableList()
+            _uiState.value = UiState.Books(
+                currentState.books.toMutableList()
                     .also { list -> list[ix] = list[ix].copy(isFavorite = list[ix].isFavorite.not()) }
             )
 
@@ -50,12 +49,12 @@ class BooksViewModel @Inject constructor(
         }
     }
 
-    fun fetchBooks() {
+    private fun fetchAllBooks() {
         _uiState.value = UiState.Loading
         CoroutineScope(Dispatchers.IO).launch {
             val response = fetchBooksUseCase.fetchBooks()
             if (response != null) {
-                _uiState.value = UiState.Data(response)
+                _uiState.value = UiState.Books(response)
             } else {
                 _uiState.value = UiState.Error("List is null")
             }

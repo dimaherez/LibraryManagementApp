@@ -3,19 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/booksFragment">
+    app:startDestination="@id/homeFragment">
 
-    <fragment
-        android:id="@+id/booksFragment"
-        android:name="com.example.librarymanagementapp.books.BooksFragment"
-        android:label="Books"
-        tools:layout="@layout/fragment_books">
-        <action
-            android:id="@+id/action_booksFragment_to_bookInfoFragment"
-            app:destination="@id/bookInfoFragment">
+<!--    <fragment-->
+<!--        android:id="@+id/booksFragment"-->
+<!--        android:name="com.example.librarymanagementapp.home.all_books.AllBooksFragment"-->
+<!--        android:label="Books"-->
+<!--        tools:layout="@layout/fragment_all_books">-->
+<!--        <action-->
+<!--            android:id="@+id/action_booksFragment_to_bookInfoFragment"-->
+<!--            app:destination="@id/bookInfoFragment">-->
 
-        </action>
-    </fragment>
+<!--        </action>-->
+<!--        <action-->
+<!--            android:id="@+id/action_booksFragment_to_homeFragment"-->
+<!--            app:destination="@id/homeFragment" />-->
+<!--    </fragment>-->
 
     <fragment
         android:id="@+id/bookInfoFragment"
@@ -24,13 +27,18 @@
         tools:layout="@layout/fragment_book_info" >
         <action
             android:id="@+id/action_bookInfoFragment_to_reviewsFragment"
-            app:destination="@id/reviewsFragment" />
+            app:destination="@id/reviewsFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_bookInfoFragment_to_editBookFragment"
-            app:destination="@id/editBookFragment" />
+            app:destination="@id/editBookFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
         <argument
-            android:name="book"
-            app:argType="com.example.domain.models.Book" />
+            android:name="bookId"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 
     <fragment
@@ -38,19 +46,25 @@
         android:name="com.example.librarymanagementapp.reviews.ReviewsFragment"
         android:label="Book Reviews"
         tools:layout="@layout/fragment_reviews" >
+        <argument
+            android:name="bookId"
+            app:argType="integer"
+            android:defaultValue="-1" />
         <action
-            android:id="@+id/action_reviewsFragment_to_booksFragment"
-            app:destination="@id/booksFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/booksFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_reviewsFragment_to_createReviewDialog"
+            app:destination="@id/createReviewDialog" />
     </fragment>
 
     <fragment
         android:id="@+id/editBookFragment"
         android:name="com.example.librarymanagementapp.edit.EditBookFragment"
         android:label="Edit Book"
-        tools:layout="@layout/fragment_edit_book" />
+        tools:layout="@layout/fragment_edit_book" >
+        <argument
+            android:name="bookId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 
     <dialog
         android:id="@+id/confirmationFragment"
@@ -60,6 +74,34 @@
     <action
         android:id="@+id/action_global_myDialogFragment"
         app:destination="@id/confirmationFragment" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.librarymanagementapp.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_bookInfoFragment"
+            app:destination="@id/bookInfoFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/createReviewDialog"
+        android:name="com.example.librarymanagementapp.reviews.CreateReviewDialog"
+        android:label="CreateReviewDialog"
+        tools:layout="@layout/dialog_create_review">
+        <argument
+            android:name="bookId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </dialog>
+    <fragment
+        android:id="@+id/favoriteBooksFragment"
+        android:name="com.example.librarymanagementapp.home.favorite_books.FavoriteBooksFragment"
+        android:label="FavoriteBooksFragment"
+        tools:layout="@layout/fragment_favorite_books">
+        <action
+            android:id="@+id/action_favoriteBooksFragment_to_bookInfoFragment"
+            app:destination="@id/bookInfoFragment" />
+    </fragment>
 
 
 </navigation>

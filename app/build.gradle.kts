@@ -3,9 +3,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 
-    id ("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
     id ("androidx.navigation.safeargs.kotlin")
+    id("com.google.dagger.hilt.android")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -41,6 +41,10 @@ android {
 
     buildFeatures {
         viewBinding = true
+    }
+
+    hilt {
+        enableAggregatingTask = true
     }
 }
 
@@ -79,6 +83,9 @@ dependencies {
     // Dependency injection
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
+
+    // ViewPager2
+    implementation(libs.androidx.viewpager2)
 }
 
 // Allow references to generated code

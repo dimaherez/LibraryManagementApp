@@ -11,14 +11,14 @@ object LibraryDB {
     private val books = initBooks()
     private val bookOrders = initBookOrders()
 
-    suspend fun loadBooks(): List<Book>? {
+    suspend fun loadBooks(): List<Book> {
         delay(2000)
         return books
 //        return if (Random.nextBoolean()) books else null
     }
 
 
-    suspend fun getBookOrders(): List<com.example.domain.models.BookOrder>? {
+    suspend fun getBookOrders(): List<com.example.domain.models.BookOrder> {
         delay(2000)
         return bookOrders
     }
@@ -94,7 +94,7 @@ object LibraryDB {
     private fun groupByAvailability() = books.groupBy { it.isAvailable }
 
     //Add sorting by title, release date, or price. For each sorting order show available first
-    suspend fun sortedByTitleAscending(): List<Book>? {
+    suspend fun sortedByTitleAscending(): List<Book> {
         delay(3000)
         return groupByAvailability().flatMap { entry -> entry.value.sortedBy { it.title } }
     }
@@ -133,7 +133,7 @@ object LibraryDB {
         return books.filter { it.isAvailable }
     }
 
-    fun filterBooks(query: String): List<Book>? {
+    fun filterBooks(query: String): List<Book> {
         return books.filter {
             it.title.lowercase().contains(query.lowercase()) ||
                     it.author.lowercase().contains(query.lowercase())

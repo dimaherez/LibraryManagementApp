@@ -1,4 +1,4 @@
-package com.example.librarymanagementapp.books
+package com.example.librarymanagementapp.home.all_books
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,38 +12,41 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.domain.models.Book
-import com.example.librarymanagementapp.NavGraphDirections
-import com.example.librarymanagementapp.adapters.BooksRvAdapter
-import com.example.librarymanagementapp.databinding.FragmentBooksBinding
+import com.example.librarymanagementapp.databinding.FragmentAllBooksBinding
+import com.example.librarymanagementapp.home.BooksRvAdapter
+import com.example.librarymanagementapp.home.HomeBaseIntent
+import com.example.librarymanagementapp.home.HomeFragmentDirections
 import com.example.librarymanagementapp.mvi.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BooksFragment : Fragment() {
-    private lateinit var binding: FragmentBooksBinding
-    private val viewModel by viewModels<BooksViewModel>()
+class AllBooksFragment : Fragment() {
+    private lateinit var binding: FragmentAllBooksBinding
+    private val viewModel by viewModels<AllBooksViewModel>()
 
     private val booksAdapter = BooksRvAdapter(
         onFavoriteCLick = { id -> toggleFavorite(id) },
-        onInfoClick = { book -> navigateToInfoFragment(book) }
+        onInfoClick = { id -> navigateToInfoFragment(id) }
     )
 
     private fun toggleFavorite(id: Int) {
-        viewModel.processIntent(BooksIntent.SetFavoriteBook(id))
+        viewModel.processIntent(HomeBaseIntent.SetFavoriteBook(id))
     }
 
-    private fun navigateToInfoFragment(book: Book) {
-        val action = BooksFragmentDirections.actionBooksFragmentToBookInfoFragment(book = book)
-        findNavController().navigate(action)
+    private fun navigateToInfoFragment(bookId: Int) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToBookInfoFragment(
+                bookId = bookId
+            )
+        )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentBooksBinding.inflate(layoutInflater)
+    ): View {
+        binding = FragmentAllBooksBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -62,37 +65,36 @@ class BooksFragment : Fragment() {
             handleSwipe()
         }
 
-        binding.btnAlertDialog.setOnClickListener {
-            findNavController().navigate(NavGraphDirections.actionGlobalMyDialogFragment())
-        }
-
-        binding.recyclerViewBooks.adapter = booksAdapter
+        binding.rvAllBooks.adapter = booksAdapter
     }
 
     private fun handleState(state: UiState) {
         when (state) {
             is UiState.Loading -> {
                 binding.progressLoader.visibility = View.VISIBLE
-                binding.recyclerViewBooks.isVisible = false
+                binding.rvAllBooks.isVisible = false
             }
-            is UiState.Data -> {
-                booksAdapter.setData(state.data)
+
+            is UiState.Books -> {
+                booksAdapter.setData(state.books)
                 binding.progressLoader.visibility = View.GONE
-                binding.recyclerViewBooks.isVisible = true
+                binding.rvAllBooks.isVisible = true
             }
+
             is UiState.Error -> {
                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 binding.progressLoader.visibility = View.GONE
-                binding.recyclerViewBooks.isVisible = false
+                binding.rvAllBooks.isVisible = false
             }
+
+            else -> {}
         }
     }
 
 
-
     private fun handleSwipe() {
-        if(viewModel.uiState.value !is UiState.Loading) {
-            viewModel.fetchBooks()
+        if (viewModel.uiState.value !is UiState.Loading) {
+            viewModel.processIntent(AllBooksIntent.FetchAllBooks)
         }
         binding.swipe.isRefreshing = false
     }
