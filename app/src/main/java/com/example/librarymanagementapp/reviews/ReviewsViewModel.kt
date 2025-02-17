@@ -1,12 +1,10 @@
 package com.example.librarymanagementapp.reviews
 
 import androidx.lifecycle.ViewModel
-import com.example.domain.models.Book
 import com.example.domain.models.Review
 import com.example.domain.use_cases.FetchBookByIdUC
 import com.example.domain.use_cases.PostReviewUC
-import com.example.domain.use_cases.UpdateBookUC
-import com.example.librarymanagementapp.mvi.UiState
+import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +16,8 @@ class ReviewsViewModel @Inject constructor(
     private val postReviewUC: PostReviewUC
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState: StateFlow<UiState> = _uiState
+    private val _uiState = MutableStateFlow<BaseUiState>(BaseUiState.Loading)
+    val uiState: StateFlow<BaseUiState> = _uiState
 
     fun processIntent(intent: ReviewsIntent) {
         when (intent) {
@@ -33,7 +31,11 @@ class ReviewsViewModel @Inject constructor(
     }
 
     private fun fetchBookById(id: Int) {
-        _uiState.value = UiState.Loading
-        _uiState.value = UiState.BookData(fetchBookByIdUC.fetchBookById(id))
+        _uiState.value = BaseUiState.Loading
+        val response = fetchBookByIdUC.fetchBookById(id)
+        if (response != null)
+            _uiState.value = ReviewsState.BookData(response)
+        else
+            _uiState.value = BaseUiState.Error("Book not found")
     }
 }

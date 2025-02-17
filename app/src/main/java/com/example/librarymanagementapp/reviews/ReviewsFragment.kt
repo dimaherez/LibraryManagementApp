@@ -1,7 +1,6 @@
 package com.example.librarymanagementapp.reviews
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.librarymanagementapp.databinding.FragmentReviewsBinding
 import com.example.librarymanagementapp.info.BookInfoFragmentArgs
-import com.example.librarymanagementapp.mvi.UiState
+import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -66,23 +65,19 @@ class ReviewsFragment : Fragment() {
         binding.reviewsRv.adapter = reviewsRvAdapter
     }
 
-    private fun handleState(state: UiState) {
+    private fun handleState(state: BaseUiState) {
         when (state) {
-            is UiState.Loading -> {
+            is BaseUiState.Loading -> {
                 binding.progressLoader.visibility = View.GONE
             }
-            is UiState.BookData -> {
-                val book = state.book
-                if (book != null) {
-                    reviewsRvAdapter.setData(book.reviews)
-                    binding.progressLoader.visibility = View.GONE
-                }
+            is ReviewsState.BookData -> {
+                reviewsRvAdapter.setData(state.book.reviews)
+                binding.progressLoader.visibility = View.GONE
             }
-            is UiState.Error -> {
+            is BaseUiState.Error -> {
                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 binding.progressLoader.visibility = View.GONE
             }
-            else -> {}
         }
     }
 
@@ -98,7 +93,7 @@ class ReviewsFragment : Fragment() {
     }
 
     private fun handleSwipe() {
-        if(viewModel.uiState.value !is UiState.Loading) {
+        if(viewModel.uiState.value !is BaseUiState.Loading) {
             viewModel.processIntent(ReviewsIntent.FetchBookById(args.bookId))
         }
         binding.swipe.isRefreshing = false

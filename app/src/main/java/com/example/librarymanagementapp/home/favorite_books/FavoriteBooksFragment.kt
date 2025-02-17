@@ -16,7 +16,7 @@ import com.example.librarymanagementapp.databinding.FragmentFavoriteBooksBinding
 import com.example.librarymanagementapp.home.BooksRvAdapter
 import com.example.librarymanagementapp.home.HomeBaseIntent
 import com.example.librarymanagementapp.home.HomeFragmentDirections
-import com.example.librarymanagementapp.mvi.UiState
+import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -62,14 +62,14 @@ class FavoriteBooksFragment : Fragment() {
         binding.rvFavoriteBooks.adapter = booksAdapter
     }
 
-    private fun handleState(state: UiState) {
+    private fun handleState(state: BaseUiState) {
         when (state) {
-            is UiState.Loading -> {
+            is BaseUiState.Loading -> {
                 binding.progressLoader.visibility = View.VISIBLE
                 binding.recommendedGroup.isVisible = false
                 binding.favoriteGroup.isVisible = false
             }
-            is UiState.FavoriteBooks -> {
+            is FavoriteBooksState.FavoriteBooks -> {
                 booksAdapter.setData(state.favoriteBooks)
                 recommendationAdapter.setData(state.recommendations)
 
@@ -77,13 +77,12 @@ class FavoriteBooksFragment : Fragment() {
                 binding.recommendedGroup.isVisible = true
                 binding.favoriteGroup.isVisible = true
             }
-            is UiState.Error -> {
+            is BaseUiState.Error -> {
                 binding.progressLoader.visibility = View.GONE
                 binding.recommendedGroup.isVisible = false
                 binding.favoriteGroup.isVisible = false
                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
             }
-            else -> {}
         }
     }
 
@@ -100,7 +99,7 @@ class FavoriteBooksFragment : Fragment() {
     }
 
     private fun handleSwipe() {
-        if(viewModel.uiState.value !is UiState.Loading) {
+        if(viewModel.uiState.value !is BaseUiState.Loading) {
             viewModel.processIntent(FavoriteBooksIntent.FetchData)
         }
         binding.swipe.isRefreshing = false

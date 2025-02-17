@@ -16,7 +16,7 @@ import com.example.librarymanagementapp.databinding.FragmentTrendingBinding
 import com.example.librarymanagementapp.home.BooksRvAdapter
 import com.example.librarymanagementapp.home.HomeBaseIntent
 import com.example.librarymanagementapp.home.HomeFragmentDirections
-import com.example.librarymanagementapp.mvi.UiState
+import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -63,9 +63,9 @@ class TrendingBooksFragment : Fragment() {
         binding.rvTrendingGenres.adapter = genresAdapter
     }
 
-    private fun handleState(state: UiState) {
+    private fun handleState(state: BaseUiState) {
         when (state) {
-            is UiState.Loading -> {
+            is BaseUiState.Loading -> {
                 binding.booksLoader.visibility = View.VISIBLE
                 binding.authorsLoader.visibility = View.VISIBLE
                 binding.genresLoader.visibility = View.VISIBLE
@@ -75,7 +75,7 @@ class TrendingBooksFragment : Fragment() {
                 binding.rvTrendingGenres.isVisible = false
             }
 
-            is UiState.Trending -> {
+            is TrendingBooksState.Trending -> {
                 binding.booksLoader.visibility = View.GONE
                 binding.authorsLoader.visibility = View.GONE
                 binding.genresLoader.visibility = View.GONE
@@ -90,14 +90,12 @@ class TrendingBooksFragment : Fragment() {
                 genresAdapter.setData(state.genres)
             }
 
-            is UiState.Error -> {
+            is BaseUiState.Error -> {
                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 binding.booksLoader.visibility = View.GONE
                 binding.authorsLoader.visibility = View.GONE
                 binding.genresLoader.visibility = View.GONE
             }
-
-            else -> {}
         }
     }
 
@@ -111,7 +109,7 @@ class TrendingBooksFragment : Fragment() {
     }
 
     private fun handleSwipe() {
-        if (viewModel.uiState.value !is UiState.Loading) {
+        if (viewModel.uiState.value !is BaseUiState.Loading) {
             viewModel.processIntent(TrendingBooksIntent.FetchTrends)
         }
         binding.swipe.isRefreshing = false

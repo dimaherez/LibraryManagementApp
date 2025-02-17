@@ -7,13 +7,10 @@ import com.example.domain.use_cases.FetchTrendingBooksUC
 import com.example.domain.use_cases.FetchTrendingGenresUC
 import com.example.domain.use_cases.SetFavoriteBookUC
 import com.example.librarymanagementapp.home.HomeBaseIntent
-import com.example.librarymanagementapp.mvi.UiState
+import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -27,8 +24,8 @@ class TrendingBooksViewModel @Inject constructor(
     private val setFavoriteBookUC: SetFavoriteBookUC
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState: StateFlow<UiState> = _uiState
+    private val _uiState = MutableStateFlow<BaseUiState>(BaseUiState.Loading)
+    val uiState: StateFlow<BaseUiState> = _uiState
 
     init {
         fetchTrends()
@@ -42,13 +39,13 @@ class TrendingBooksViewModel @Inject constructor(
     }
 
     private fun fetchTrends() {
-        _uiState.value = UiState.Loading
+        _uiState.value = BaseUiState.Loading
         CoroutineScope(Dispatchers.IO).launch {
             val trendingBooks = fetchTrendingBooks()
             val trendingAuthors = fetchTrendingAuthors()
             val trendingGenres = fetchTrendingGenres()
 
-            _uiState.value = UiState.Trending(trendingBooks, trendingAuthors, trendingGenres)
+            _uiState.value = TrendingBooksState.Trending(trendingBooks, trendingAuthors, trendingGenres)
         }
 
 
@@ -80,7 +77,7 @@ class TrendingBooksViewModel @Inject constructor(
 
     private fun setFavoriteBook(id: Int) {
         val currentState = _uiState.value
-        if (currentState is UiState.Trending) {
+        if (currentState is TrendingBooksState.Trending) {
             val ix = currentState.books.indexOfFirst { it.id == id }
 
             _uiState.value = currentState.copy(

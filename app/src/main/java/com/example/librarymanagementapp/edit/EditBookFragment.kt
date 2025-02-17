@@ -18,7 +18,7 @@ import com.example.domain.enums.Genre
 import com.example.domain.models.Book
 import com.example.librarymanagementapp.databinding.FragmentEditBookBinding
 import com.example.librarymanagementapp.info.BookInfoFragmentArgs
-import com.example.librarymanagementapp.mvi.UiState
+import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -68,10 +68,10 @@ class EditBookFragment : Fragment() {
 
     private fun saveBookChanges() {
         val currentState = viewModel.uiState.value
-        if (currentState is UiState.BookData) {
+        if (currentState is BookEditState.BookData) {
             viewModel.processIntent(
                 EditBookIntent.UpdateBook(
-                    setBookNewData(currentState.book!!)
+                    setBookNewData(currentState.book)
                 )
             )
             Toast.makeText(requireContext(), "Book has been updated!", Toast.LENGTH_SHORT)
@@ -80,44 +80,40 @@ class EditBookFragment : Fragment() {
     }
 
 
-    private fun handleState(state: UiState) {
+    private fun handleState(state: BaseUiState) {
         when (state) {
-            is UiState.Loading -> {
+            is BaseUiState.Loading -> {
                 binding.progressLoader.visibility = View.VISIBLE
             }
 
-            is UiState.BookData -> {
+            is BookEditState.BookData -> {
                 setInitialData(state.book)
                 binding.progressLoader.visibility = View.GONE
             }
 
-            is UiState.Error -> {
+            is BaseUiState.Error -> {
                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 binding.progressLoader.visibility = View.GONE
             }
-
-            else -> {}
         }
     }
 
-    private fun setInitialData(book: Book?) {
-        if (book != null) {
-            binding.editTitle.setText(book.title)
-            binding.editAuthor.setText(book.author)
-            binding.editPrice.setText(book.price.toString())
-            binding.editDescription.setText(book.description)
-            binding.editReleaseDate.setText(book.releaseDate.toString())
+    private fun setInitialData(book: Book) {
+        binding.editTitle.setText(book.title)
+        binding.editAuthor.setText(book.author)
+        binding.editPrice.setText(book.price.toString())
+        binding.editDescription.setText(book.description)
+        binding.editReleaseDate.setText(book.releaseDate.toString())
 
-            binding.editGenreGroup.check(
-                when (book.genre) {
-                    Genre.FANTASY -> binding.genreFantasy.id
-                    Genre.FICTION -> binding.genreFiction.id
-                    Genre.BIOGRAPHY -> binding.genreBiography.id
-                    Genre.SCIENCE_FICTION -> binding.genreScienceFiction.id
-                    Genre.MYSTERY -> binding.genreMystery.id
-                }
-            )
-        }
+        binding.editGenreGroup.check(
+            when (book.genre) {
+                Genre.FANTASY -> binding.genreFantasy.id
+                Genre.FICTION -> binding.genreFiction.id
+                Genre.BIOGRAPHY -> binding.genreBiography.id
+                Genre.SCIENCE_FICTION -> binding.genreScienceFiction.id
+                Genre.MYSTERY -> binding.genreMystery.id
+            }
+        )
     }
 
     private fun setBookNewData(book: Book): Book {

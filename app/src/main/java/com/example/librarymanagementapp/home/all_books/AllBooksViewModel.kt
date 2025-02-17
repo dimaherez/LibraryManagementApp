@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.domain.use_cases.FetchBooksUseCase
 import com.example.domain.use_cases.SetFavoriteBookUC
 import com.example.librarymanagementapp.home.HomeBaseIntent
-import com.example.librarymanagementapp.mvi.UiState
+import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +19,8 @@ class AllBooksViewModel @Inject constructor(
     private val setFavoriteBookUC: SetFavoriteBookUC
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState: StateFlow<UiState> = _uiState
+    private val _uiState = MutableStateFlow<BaseUiState>(BaseUiState.Loading)
+    val uiState: StateFlow<BaseUiState> = _uiState
 
     init {
         fetchAllBooks()
@@ -37,10 +37,10 @@ class AllBooksViewModel @Inject constructor(
 
     private fun setFavoriteBook(id: Int) {
         val currentState = _uiState.value
-        if (currentState is UiState.Books) {
+        if (currentState is AllBooksState.Books) {
             val ix = currentState.books.indexOfFirst { it.id == id }
 
-            _uiState.value = UiState.Books(
+            _uiState.value = AllBooksState.Books(
                 currentState.books.toMutableList()
                     .also { list -> list[ix] = list[ix].copy(isFavorite = list[ix].isFavorite.not()) }
             )
@@ -50,13 +50,13 @@ class AllBooksViewModel @Inject constructor(
     }
 
     private fun fetchAllBooks() {
-        _uiState.value = UiState.Loading
+        _uiState.value = BaseUiState.Loading
         CoroutineScope(Dispatchers.IO).launch {
             val response = fetchBooksUseCase.fetchBooks()
             if (response != null) {
-                _uiState.value = UiState.Books(response)
+                _uiState.value = AllBooksState.Books(response)
             } else {
-                _uiState.value = UiState.Error("List is null")
+                _uiState.value = BaseUiState.Error("List is null")
             }
 
         }

@@ -72,17 +72,17 @@
     <string name="book_image">Book image</string>
 
     <plurals name="plural_review">
-        <item quantity="one">Review</item>
+        <item quantity="one">%d Review</item>
         <item quantity="other">%d Reviews</item>
     </plurals>
 
     <plurals name="plural_order">
-        <item quantity="one">Order</item>
+        <item quantity="one"> %d Order</item>
         <item quantity="other">%d Orders</item>
     </plurals>
 
     <plurals name="plural_book_available">
-        <item quantity="one">book available</item>
+        <item quantity="one">%d book available</item>
         <item quantity="other">%d books available</item>
     </plurals>
 </resources>
