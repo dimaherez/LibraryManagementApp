@@ -4,5 +4,5 @@ import com.example.domain.repository.LibraryRepo
 import javax.inject.Inject
 
 class ReturnBookUseCase @Inject constructor(private val libraryRepo: LibraryRepo) {
-    fun returnBook(id: Int) = libraryRepo.returnBook(id)
+    suspend fun returnBook(id: Int) = libraryRepo.returnBook(id)
 }

@@ -5,5 +5,5 @@ import com.example.domain.repository.LibraryRepo
 import javax.inject.Inject
 
 class UpdateBookUC @Inject constructor(private val libraryRepo: LibraryRepo) {
-    fun updateBook(book: Book) = libraryRepo.updateBook(book)
+    suspend fun updateBook(book: Book) = libraryRepo.updateBook(book)
 }

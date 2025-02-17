@@ -4,5 +4,5 @@ import com.example.domain.repository.LibraryRepo
 import javax.inject.Inject
 
 class FetchBookByIdUC @Inject constructor(private val libraryRepo: LibraryRepo) {
-    fun fetchBookById(id: Int) = libraryRepo.fetchBookById(id)
+    suspend fun fetchBookById(id: Int) = libraryRepo.fetchBookById(id)
 }

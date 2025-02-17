@@ -5,5 +5,5 @@ import com.example.domain.repository.LibraryRepo
 import javax.inject.Inject
 
 class PostReviewUC @Inject constructor(private val libraryRepo: LibraryRepo) {
-    fun postReview(bookId: Int, review: Review) = libraryRepo.postReview(bookId, review)
+    suspend fun postReview(bookId: Int, review: Review) = libraryRepo.postReview(bookId, review)
 }

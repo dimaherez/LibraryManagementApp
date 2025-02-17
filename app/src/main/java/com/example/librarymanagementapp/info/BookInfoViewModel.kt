@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import com.example.domain.use_cases.FetchBookByIdUC
 import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,10 +28,12 @@ class BookInfoViewModel @Inject constructor (
 
     private fun fetchBookById(bookId: Int) {
         _uiState.value = BaseUiState.Loading
-        val response = fetchBookByIdUC.fetchBookById(bookId)
-        if (response != null)
-            _uiState.value = BookInfoState.BookData(response)
-        else
-            _uiState.value = BaseUiState.Error("Book not found")
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = fetchBookByIdUC.fetchBookById(bookId)
+            if (response != null)
+                _uiState.value = BookInfoState.BookData(response)
+            else
+                _uiState.value = BaseUiState.Error("Book not found")
+        }
     }
 }

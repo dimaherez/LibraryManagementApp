@@ -15,30 +15,30 @@ class LibraryRepoImpl @Inject constructor() : LibraryRepo {
         return BooksDB.books
     }
 
-    override fun borrowBook(id: Int) {
+    override suspend fun borrowBook(id: Int) {
         val indexById = BooksDB.books.indexOfFirst { it.id == id }
         if (BooksDB.books[indexById].availableCount > 0)
             BooksDB.books[indexById].availableCount -= 1
     }
 
-    override fun returnBook(id: Int) {
+    override suspend fun returnBook(id: Int) {
         val indexById = BooksDB.books.indexOfFirst { it.id == id }
         BooksDB.books[indexById].availableCount += 1
     }
 
-    override fun updateBook(book: Book) {
+    override suspend fun updateBook(book: Book) {
         val indexById = BooksDB.books.indexOfFirst { it.id == book.id }
         if (indexById != -1) {
             BooksDB.books[indexById] = book.copy()
         }
     }
 
-    override fun setFavoriteBook(id: Int) {
+    override suspend fun setFavoriteBook(id: Int) {
         val ix = BooksDB.books.indexOfFirst { it.id == id }
         BooksDB.books[ix].isFavorite = BooksDB.books[ix].isFavorite.not()
     }
 
-    override fun fetchBookById(id: Int): Book? = BooksDB.books.find { it.id == id }
+    override suspend fun fetchBookById(id: Int): Book? = BooksDB.books.find { it.id == id }
 
 
     override suspend fun fetchFavoriteBooks(): List<Book> {
@@ -96,7 +96,7 @@ class LibraryRepoImpl @Inject constructor() : LibraryRepo {
             }
     }
 
-    override fun postReview(bookId: Int, review: Review) {
+    override suspend fun postReview(bookId: Int, review: Review) {
         val indexById = BooksDB.books.indexOfFirst { it.id == bookId }
         val book = BooksDB.books[indexById]
         BooksDB.books[indexById] = book.copy(

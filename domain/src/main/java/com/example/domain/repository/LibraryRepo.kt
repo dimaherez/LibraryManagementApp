@@ -5,16 +5,16 @@ import com.example.domain.models.Review
 
 interface LibraryRepo {
 
-    suspend fun fetchBooks(): List<Book>
-    fun borrowBook(id: Int)
-    fun returnBook(id: Int)
-    fun updateBook(book: Book)
-    fun setFavoriteBook(id: Int)
-    fun fetchBookById(id: Int): Book?
+    suspend fun fetchBooks(): List<Book>?
+    suspend fun borrowBook(id: Int)
+    suspend fun returnBook(id: Int)
+    suspend fun updateBook(book: Book)
+    suspend fun setFavoriteBook(id: Int)
+    suspend fun fetchBookById(id: Int): Book?
     suspend fun fetchFavoriteBooks(): List<Book>
     suspend fun fetchTrendingBooks(): List<Book>
     suspend fun fetchTrendingAuthors(): List<String>
     suspend fun fetchTrendingGenres(): List<String>
     suspend fun fetchBooksRecommendation(): List<Book>
-    fun postReview(bookId: Int, review: Review)
+    suspend fun postReview(bookId: Int, review: Review)
 }

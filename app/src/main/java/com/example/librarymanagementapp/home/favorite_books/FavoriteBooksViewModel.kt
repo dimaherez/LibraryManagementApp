@@ -68,15 +68,17 @@ class FavoriteBooksViewModel @Inject constructor(
 
     private fun setFavoriteBook(id: Int) {
         val currentState = _uiState.value
-        if (currentState is FavoriteBooksState.FavoriteBooks) {
-            val ix = currentState.favoriteBooks.indexOfFirst { it.id == id }
+        CoroutineScope(Dispatchers.IO).launch {
+            if (currentState is FavoriteBooksState.FavoriteBooks) {
+                val ix = currentState.favoriteBooks.indexOfFirst { it.id == id }
 
-            _uiState.value = currentState.copy(
-                favoriteBooks = currentState.favoriteBooks.toMutableList()
-                    .also { list -> list[ix] = list[ix].copy(isFavorite = list[ix].isFavorite.not()) }
-            )
+                _uiState.value = currentState.copy(
+                    favoriteBooks = currentState.favoriteBooks.toMutableList()
+                        .also { list -> list[ix] = list[ix].copy(isFavorite = list[ix].isFavorite.not()) }
+                )
 
-            setFavoriteBookUC.setFavoriteBook(id)
+                setFavoriteBookUC.setFavoriteBook(id)
+            }
         }
     }
 }
