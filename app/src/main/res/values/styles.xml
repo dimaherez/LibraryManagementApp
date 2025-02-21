@@ -40,6 +40,10 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
+    <style name="style_text.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="style_text.12">
         <item name="android:textSize">14sp</item>
     </style>
@@ -48,13 +52,11 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="style_text.16_bold">
+    <style name="style_text.bold.16">
         <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="style_text.24_bold">
+    <style name="style_text.bold.24">
         <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 </resources>

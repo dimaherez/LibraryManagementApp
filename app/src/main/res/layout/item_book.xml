@@ -11,7 +11,7 @@
 
         <TextView
             android:id="@+id/textViewTitle"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"

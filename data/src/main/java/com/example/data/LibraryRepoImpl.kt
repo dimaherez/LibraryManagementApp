@@ -104,4 +104,8 @@ class LibraryRepoImpl @Inject constructor() : LibraryRepo {
         )
     }
 
+    override suspend fun fetchBooksGroupedByInitial(): Map<Char, List<Book>> {
+        return BooksDB.books.groupBy { it.title.first() }.toSortedMap()
+    }
+
 }

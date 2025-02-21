@@ -1,6 +1,7 @@
 package com.example.librarymanagementapp.home.all_books
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.librarymanagementapp.databinding.FragmentAllBooksBinding
-import com.example.librarymanagementapp.home.BooksRvAdapter
 import com.example.librarymanagementapp.home.HomeBaseIntent
 import com.example.librarymanagementapp.home.HomeFragmentDirections
 import com.example.librarymanagementapp.mvi.BaseUiState
@@ -25,7 +25,7 @@ class AllBooksFragment : Fragment() {
     private lateinit var binding: FragmentAllBooksBinding
     private val viewModel by viewModels<AllBooksViewModel>()
 
-    private val booksAdapter = BooksRvAdapter(
+    private val booksAdapter = GroupedBooksAdapter(
         onFavoriteCLick = { id -> toggleFavorite(id) },
         onInfoClick = { id -> navigateToInfoFragment(id) }
     )
@@ -75,8 +75,9 @@ class AllBooksFragment : Fragment() {
                 binding.rvAllBooks.isVisible = false
             }
 
-            is AllBooksState.Books -> {
-                booksAdapter.setData(state.books)
+            is AllBooksState.SectionsBooks -> {
+                Log.d("mylog", "AllBooksState.SectionsBooks")
+                booksAdapter.setData(state.rvBooksList)
                 binding.progressLoader.visibility = View.GONE
                 binding.rvAllBooks.isVisible = true
             }

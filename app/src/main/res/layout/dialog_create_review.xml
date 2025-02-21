@@ -13,7 +13,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/userEditText"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -35,7 +35,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/reviewEditText"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>

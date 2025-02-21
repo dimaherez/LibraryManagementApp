@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            style="@style/style_text.24_bold"
+            style="@style/style_text.bold.24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
@@ -37,7 +37,7 @@
 
         <TextView
             android:id="@+id/tvAuthor"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.24"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
@@ -64,7 +64,7 @@
 
         <TextView
             android:id="@+id/tvGenre"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.16"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
@@ -74,7 +74,7 @@
 
         <TextView
             android:id="@+id/tvReleaseDate"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.16"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
@@ -95,7 +95,7 @@
 
         <TextView
             android:id="@+id/tvPrice"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.16"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
@@ -105,7 +105,7 @@
 
         <TextView
             android:id="@+id/tvAvailability"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.16"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
@@ -115,7 +115,7 @@
 
         <TextView
             android:id="@+id/tvDescription"
-            style="@style/style_text.16_bold"
+            style="@style/style_text.bold.16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"

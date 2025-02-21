@@ -33,7 +33,7 @@
                 android:text="@string/swipe_to_refresh" />
 
             <TextView
-                style="@style/style_text.24_bold"
+                style="@style/style_text.bold.24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/trending_books" />
@@ -54,7 +54,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <TextView
-                style="@style/style_text.24_bold"
+                style="@style/style_text.bold.24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/trending_authors" />
@@ -80,7 +80,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <TextView
-                style="@style/style_text.24_bold"
+                style="@style/style_text.bold.24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/trending_genres" />

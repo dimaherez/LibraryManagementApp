@@ -55,7 +55,7 @@
 
             <TextView
                 android:id="@+id/favoriteBooksLabel"
-                style="@style/style_text.24_bold"
+                style="@style/style_text.bold.24"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_books"
@@ -80,7 +80,7 @@
 
             <TextView
                 android:id="@+id/recommendedBooksLabel"
-                style="@style/style_text.24_bold"
+                style="@style/style_text.bold.24"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/recommended_for_you"
