@@ -1,6 +1,7 @@
 package com.example.librarymanagementapp.home.favorite_books
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.domain.models.Book
 import com.example.domain.use_cases.BooksRecommendationUC
 import com.example.domain.use_cases.FetchFavoriteBooksUC
@@ -13,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -68,7 +70,7 @@ class FavoriteBooksViewModel @Inject constructor(
 
     private fun setFavoriteBook(id: Int) {
         val currentState = _uiState.value
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             if (currentState is FavoriteBooksState.FavoriteBooks) {
                 val ix = currentState.favoriteBooks.indexOfFirst { it.id == id }
 

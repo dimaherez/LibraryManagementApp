@@ -1,6 +1,7 @@
 package com.example.librarymanagementapp.home.trending
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.domain.models.Book
 import com.example.domain.use_cases.FetchTrendingAuthorsUC
 import com.example.domain.use_cases.FetchTrendingBooksUC
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -77,7 +79,7 @@ class TrendingBooksViewModel @Inject constructor(
 
     private fun setFavoriteBook(id: Int) {
         val currentState = _uiState.value
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             if (currentState is TrendingBooksState.Trending) {
                 val ix = currentState.books.indexOfFirst { it.id == id }
 

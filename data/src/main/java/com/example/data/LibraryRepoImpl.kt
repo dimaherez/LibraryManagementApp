@@ -1,17 +1,19 @@
 package com.example.data
 
+import com.example.domain.enums.Genre
 import com.example.domain.enums.string
 import com.example.domain.models.Book
 import com.example.domain.models.Review
 import com.example.domain.repository.LibraryRepo
 import kotlinx.coroutines.delay
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 class LibraryRepoImpl @Inject constructor() : LibraryRepo {
 
     override suspend fun fetchBooks(): List<Book> {
-        delay(3000)
+//        delay(3000)
         return BooksDB.books
     }
 
@@ -92,8 +94,8 @@ class LibraryRepoImpl @Inject constructor() : LibraryRepo {
             .map { it.genre }
 
         return BooksDB.books.filter {
-                it.author in favoriteAuthors || it.genre in favoriteGenres
-            }
+            it.author in favoriteAuthors || it.genre in favoriteGenres
+        }
     }
 
     override suspend fun postReview(bookId: Int, review: Review) {
@@ -104,8 +106,25 @@ class LibraryRepoImpl @Inject constructor() : LibraryRepo {
         )
     }
 
-    override suspend fun fetchBooksGroupedByInitial(): Map<Char, List<Book>> {
-        return BooksDB.books.groupBy { it.title.first() }.toSortedMap()
+    override suspend fun addBook(): Book? {
+        val newBook = Book(
+            id = BooksDB.books.size + 1,
+            title = "ATest Book ${BooksDB.books.size + 1}",
+            genre = Genre.FICTION,
+            author = "Test Author",
+            releaseDate = LocalDate.of(1925, 4, 10),
+            price = 10.99f,
+            isAvailable = true,
+            borrowCount = 5,
+            availableCount = 5,
+            isFavorite = false,
+            description = "Some description",
+            reviews = listOf(
+                Review("User1", rating = 4, content = "Nice"),
+                Review("User2", rating = 3, content = "Good")
+            )
+        )
+        BooksDB.books.add(newBook)
+        return newBook
     }
-
 }

@@ -70,6 +70,8 @@
     <string name="name">Name</string>
     <string name="edit_button">Edit button</string>
     <string name="book_image">Book image</string>
+    <string name="add_book">Add book</string>
+    <string name="new_label">*New</string>
 
     <plurals name="plural_review">
         <item quantity="one">%d Review</item>

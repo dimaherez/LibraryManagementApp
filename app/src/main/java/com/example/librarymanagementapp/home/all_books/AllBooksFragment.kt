@@ -25,7 +25,7 @@ class AllBooksFragment : Fragment() {
     private lateinit var binding: FragmentAllBooksBinding
     private val viewModel by viewModels<AllBooksViewModel>()
 
-    private val booksAdapter = GroupedBooksAdapter(
+    private val booksAdapter = SectionedBooksAdapter(
         onFavoriteCLick = { id -> toggleFavorite(id) },
         onInfoClick = { id -> navigateToInfoFragment(id) }
     )
@@ -61,8 +61,16 @@ class AllBooksFragment : Fragment() {
             }
         }
 
+//        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+//            handleState(state)
+//        }
+
         binding.swipe.setOnRefreshListener {
             handleSwipe()
+        }
+
+        binding.btnAddBook.setOnClickListener {
+            viewModel.processIntent(AllBooksIntent.AddBook)
         }
 
         binding.rvAllBooks.adapter = booksAdapter
@@ -75,9 +83,9 @@ class AllBooksFragment : Fragment() {
                 binding.rvAllBooks.isVisible = false
             }
 
-            is AllBooksState.SectionsBooks -> {
+            is AllBooksState.AllBooks -> {
                 Log.d("mylog", "AllBooksState.SectionsBooks")
-                booksAdapter.setData(state.rvBooksList)
+                booksAdapter.setData(state.books)
                 binding.progressLoader.visibility = View.GONE
                 binding.rvAllBooks.isVisible = true
             }

@@ -17,5 +17,5 @@ interface LibraryRepo {
     suspend fun fetchTrendingGenres(): List<String>
     suspend fun fetchBooksRecommendation(): List<Book>
     suspend fun postReview(bookId: Int, review: Review)
-    suspend fun fetchBooksGroupedByInitial(): Map<Char, List<Book>>?
+    suspend fun addBook(): Book?
 }

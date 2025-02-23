@@ -15,7 +15,7 @@ import com.example.librarymanagementapp.databinding.ItemSectionBinding
 private const val ITEM_VIEW_TYPE_SECTION = 0
 private const val ITEM_VIEW_TYPE_BOOK = 1
 
-class GroupedBooksAdapter(
+class SectionedBooksAdapter(
     private val onFavoriteCLick: (Int) -> Unit = {},
     private val onInfoClick: (bookId: Int) -> Unit = {}
 ) : RecyclerView.Adapter<ViewHolder>() {
@@ -27,12 +27,18 @@ class GroupedBooksAdapter(
         setHasStableIds(true)
     }
 
-    override fun getItemId(position: Int): Long = position.toLong()
+    override fun getItemId(position: Int): Long = itemsList[position].hashCode().toLong()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<ListItem>) {
+    fun setData(data: List<Book>) {
         Log.d("mylog", "Set Data")
+
         itemsList = data
+            .groupBy { it.title.first() }
+            .toSortedMap()
+            .flatMap { (key, books) ->
+                listOf(ListItem.Section(key)) + books.map { ListItem.BookInfo(it) }
+            }
 
         notifyDataSetChanged()
     }
