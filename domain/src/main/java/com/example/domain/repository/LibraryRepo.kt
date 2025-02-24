@@ -4,7 +4,6 @@ import com.example.domain.models.Book
 import com.example.domain.models.Review
 
 interface LibraryRepo {
-
     suspend fun fetchBooks(): List<Book>?
     suspend fun borrowBook(id: Int)
     suspend fun returnBook(id: Int)
@@ -17,5 +16,5 @@ interface LibraryRepo {
     suspend fun fetchTrendingGenres(): List<String>
     suspend fun fetchBooksRecommendation(): List<Book>
     suspend fun postReview(bookId: Int, review: Review)
-    suspend fun addBook(): Book?
+    suspend fun addBook(book: Book): Book?
 }

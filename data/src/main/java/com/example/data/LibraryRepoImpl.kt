@@ -106,25 +106,8 @@ class LibraryRepoImpl @Inject constructor() : LibraryRepo {
         )
     }
 
-    override suspend fun addBook(): Book? {
-        val newBook = Book(
-            id = BooksDB.books.size + 1,
-            title = "ATest Book ${BooksDB.books.size + 1}",
-            genre = Genre.FICTION,
-            author = "Test Author",
-            releaseDate = LocalDate.of(1925, 4, 10),
-            price = 10.99f,
-            isAvailable = true,
-            borrowCount = 5,
-            availableCount = 5,
-            isFavorite = false,
-            description = "Some description",
-            reviews = listOf(
-                Review("User1", rating = 4, content = "Nice"),
-                Review("User2", rating = 3, content = "Good")
-            )
-        )
-        BooksDB.books.add(newBook)
-        return newBook
+    override suspend fun addBook(book: Book): Book? {
+        BooksDB.books.add(book)
+        return book
     }
 }

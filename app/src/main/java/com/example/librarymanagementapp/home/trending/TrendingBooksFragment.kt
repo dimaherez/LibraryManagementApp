@@ -100,7 +100,7 @@ class TrendingBooksFragment : Fragment() {
     }
 
     private fun toggleFavorite(id: Int) {
-        viewModel.processIntent(HomeBaseIntent.SetFavoriteBook(id))
+        viewModel.processIntent(HomeBaseIntent.ToggleFavoriteBook(id))
     }
 
     private fun navigateToInfoFragment(bookId: Int) {

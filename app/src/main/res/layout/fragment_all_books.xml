@@ -7,6 +7,29 @@
     android:orientation="vertical"
     tools:context=".home.all_books.AllBooksFragment">
 
+    <Button
+        android:id="@+id/btnSetAllFavorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_to_favorites"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnRemoveAllFavorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remove_from_favorites"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupSelectionButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="btnSetAllFavorites, btnRemoveAllFavorites"/>
+
     <TextView
         android:id="@+id/tvSwipe"
         style="@style/style_text.14"
@@ -15,7 +38,7 @@
         android:gravity="end"
         android:text="@string/swipe_to_refresh"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/btnRemoveAllFavorites"/>
 
     <ProgressBar
         android:id="@+id/progress_loader"

@@ -1,7 +1,6 @@
 package com.example.librarymanagementapp.home.favorite_books
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.domain.models.Book
 import com.example.domain.use_cases.BooksRecommendationUC
 import com.example.domain.use_cases.FetchFavoriteBooksUC
@@ -14,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,7 +31,7 @@ class FavoriteBooksViewModel @Inject constructor(
     fun processIntent(intent: HomeBaseIntent) {
         when (intent) {
             is FavoriteBooksIntent.FetchData -> fetchData()
-            is HomeBaseIntent.SetFavoriteBook -> setFavoriteBook(intent.id)
+            is HomeBaseIntent.ToggleFavoriteBook -> setFavoriteBook(intent.id)
         }
     }
 

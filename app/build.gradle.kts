@@ -67,6 +67,9 @@ dependencies {
     implementation (libs.androidx.recyclerview)
     implementation (libs.androidx.viewbinding)
 
+    // Recycler view items selection
+    implementation (libs.androidx.recyclerview.selection)
+
     // Coroutines
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)

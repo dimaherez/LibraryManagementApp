@@ -1,27 +1,31 @@
-package com.example.librarymanagementapp.home.all_books
+package com.example.librarymanagementapp.home.all_books.all_books_adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.domain.models.Book
 import com.example.librarymanagementapp.R
 import com.example.librarymanagementapp.databinding.ItemBookBinding
 import com.example.librarymanagementapp.databinding.ItemSectionBinding
+import com.example.librarymanagementapp.home.all_books.ListItem
 
 private const val ITEM_VIEW_TYPE_SECTION = 0
-private const val ITEM_VIEW_TYPE_BOOK = 1
+const val ITEM_VIEW_TYPE_BOOK = 1
 
 class SectionedBooksAdapter(
     private val onFavoriteCLick: (Int) -> Unit = {},
     private val onInfoClick: (bookId: Int) -> Unit = {}
 ) : RecyclerView.Adapter<ViewHolder>() {
 
-    private var itemsList: List<ListItem> = listOf()
     lateinit var context: Context
+    var itemsList: List<ListItem> = listOf()
+        private set
+    var tracker: SelectionTracker<Long>? = null
 
     init {
         setHasStableIds(true)
@@ -29,9 +33,13 @@ class SectionedBooksAdapter(
 
     override fun getItemId(position: Int): Long = itemsList[position].hashCode().toLong()
 
+    fun getItemByKey(key: Long): ListItem.BookInfo? {
+        return itemsList.filterIsInstance<ListItem.BookInfo>()
+            .find { it.hashCode().toLong() == key }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<Book>) {
-        Log.d("mylog", "Set Data")
 
         itemsList = data
             .groupBy { it.title.first() }
@@ -43,6 +51,17 @@ class SectionedBooksAdapter(
         notifyDataSetChanged()
     }
 
+    fun removeFromFavorites(position: Int) {
+        val item: ListItem.BookInfo = itemsList[position] as ListItem.BookInfo
+        item.book.isFavorite = false
+        notifyItemChanged(position)
+    }
+
+    fun addToFavorites(position: Int) {
+        val item: ListItem.BookInfo = itemsList[position] as ListItem.BookInfo
+        item.book.isFavorite = true
+        notifyItemChanged(position)
+    }
 
     class SectionViewHolder(private val binding: ItemSectionBinding) :
         ViewHolder(binding.root) {
@@ -58,7 +77,14 @@ class SectionedBooksAdapter(
         private val onInfoClick: (bookId: Int) -> Unit = {}
     ) :
         ViewHolder(binding.root) {
-        fun bind(book: Book) {
+
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
+            object : ItemDetailsLookup.ItemDetails<Long>() {
+                override fun getPosition(): Int = bindingAdapterPosition
+                override fun getSelectionKey(): Long = itemId
+            }
+
+        fun bind(book: Book, isSelected: Boolean) {
             binding.textViewTitle.text = book.title
             binding.textViewAuthor.text = book.author
 
@@ -86,6 +112,9 @@ class SectionedBooksAdapter(
             binding.infoBtn.setOnClickListener {
                 onInfoClick(book.id)
             }
+
+            binding.constraintLayout.isActivated = isSelected
+
         }
     }
 
@@ -126,10 +155,14 @@ class SectionedBooksAdapter(
             }
 
             is BookViewHolder -> {
-                holder.bind((itemsList[position] as ListItem.BookInfo).book)
+                holder.bind(
+                    (itemsList[position] as ListItem.BookInfo).book,
+                    tracker?.isSelected(getItemId(position)) ?: false
+                )
             }
         }
     }
 
     override fun getItemCount(): Int = itemsList.size
+
 }
