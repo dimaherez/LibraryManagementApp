@@ -82,6 +82,9 @@
         <action
             android:id="@+id/action_homeFragment_to_bookInfoFragment"
             app:destination="@id/bookInfoFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_fragmentAddBook"
+            app:destination="@id/fragmentAddBook" />
     </fragment>
     <dialog
         android:id="@+id/createReviewDialog"
@@ -102,6 +105,16 @@
             android:id="@+id/action_favoriteBooksFragment_to_bookInfoFragment"
             app:destination="@id/bookInfoFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/fragmentAddBook"
+        android:name="com.example.librarymanagementapp.home.all_books.FragmentAddBook"
+        android:label="FragmentAddBook"
+        tools:layout="@layout/dialog_add_book">
+        <argument
+            android:name="bookInfo"
+            app:argType="string"
+            android:defaultValue="Book info" />
+    </dialog>
 
 
 </navigation>

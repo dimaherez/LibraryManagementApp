@@ -87,7 +87,7 @@ class TrendingBooksViewModel @Inject constructor(
                     }
                 )
 
-                setFavoriteBookUC.setFavoriteBook(id)
+                setFavoriteBookUC.toggleFavorite(id)
             }
         }
 

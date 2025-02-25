@@ -51,13 +51,13 @@ class SectionedBooksAdapter(
         notifyDataSetChanged()
     }
 
-    fun removeFromFavorites(position: Int) {
+    fun resetFavorite(position: Int) {
         val item: ListItem.BookInfo = itemsList[position] as ListItem.BookInfo
         item.book.isFavorite = false
         notifyItemChanged(position)
     }
 
-    fun addToFavorites(position: Int) {
+    fun setFavorite(position: Int) {
         val item: ListItem.BookInfo = itemsList[position] as ListItem.BookInfo
         item.book.isFavorite = true
         notifyItemChanged(position)
@@ -87,19 +87,15 @@ class SectionedBooksAdapter(
         fun bind(book: Book, isSelected: Boolean) {
             binding.textViewTitle.text = book.title
             binding.textViewAuthor.text = book.author
-
             binding.availableCount.text = parent.context.resources.getQuantityString(
                 R.plurals.plural_book_available, book.availableCount, book.availableCount
             )
-
             binding.borrowCount.text = parent.context.resources.getQuantityString(
                 R.plurals.plural_order, book.borrowCount, book.borrowCount
             )
-
             binding.reviewsCount.text = parent.context.resources.getQuantityString(
                 R.plurals.plural_review, book.reviews.size, book.reviews.size
             )
-
             binding.bookItemRatingBar.rating = book.rating.toFloat()
 
             if (book.isFavorite) binding.favoriteBtn.setImageResource(R.drawable.baseline_star_24)
@@ -114,7 +110,6 @@ class SectionedBooksAdapter(
             }
 
             binding.constraintLayout.isActivated = isSelected
-
         }
     }
 

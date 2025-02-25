@@ -14,8 +14,12 @@ class SwipeToFavoriteCallback(private val adapter: SectionedBooksAdapter, privat
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        return makeMovementFlags(0, swipeFlags)
+        if (viewHolder is SectionedBooksAdapter.BookViewHolder) {
+            val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            return makeMovementFlags(0, swipeFlags)
+        } else {
+            return makeMovementFlags(0, 0)
+        }
     }
 
     override fun onMove(
@@ -30,9 +34,9 @@ class SwipeToFavoriteCallback(private val adapter: SectionedBooksAdapter, privat
         val position = viewHolder.bindingAdapterPosition
         selectionTracker.clearSelection()
         if (direction == ItemTouchHelper.LEFT) {
-            adapter.addToFavorites(position)
+            adapter.setFavorite(position)
         } else if (direction == ItemTouchHelper.RIGHT) {
-            adapter.removeFromFavorites(position)
+            adapter.resetFavorite(position)
         }
     }
 

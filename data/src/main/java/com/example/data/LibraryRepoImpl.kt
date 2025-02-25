@@ -1,12 +1,10 @@
 package com.example.data
 
-import com.example.domain.enums.Genre
 import com.example.domain.enums.string
 import com.example.domain.models.Book
 import com.example.domain.models.Review
 import com.example.domain.repository.LibraryRepo
 import kotlinx.coroutines.delay
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -14,7 +12,7 @@ class LibraryRepoImpl @Inject constructor() : LibraryRepo {
 
     override suspend fun fetchBooks(): List<Book> {
 //        delay(3000)
-        return BooksDB.books
+        return BooksDB.books.map { it.copy() }
     }
 
     override suspend fun borrowBook(id: Int) {
@@ -35,7 +33,7 @@ class LibraryRepoImpl @Inject constructor() : LibraryRepo {
         }
     }
 
-    override suspend fun setFavoriteBook(id: Int) {
+    override suspend fun toggleFavorite(id: Int) {
         val ix = BooksDB.books.indexOfFirst { it.id == id }
         BooksDB.books[ix].isFavorite = BooksDB.books[ix].isFavorite.not()
     }

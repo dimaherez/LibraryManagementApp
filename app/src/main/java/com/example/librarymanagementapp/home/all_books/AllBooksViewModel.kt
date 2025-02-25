@@ -92,11 +92,13 @@ class AllBooksViewModel @Inject constructor(
                 addBookUC.addBook(newBook)
             }
 
-            val currentBooks = currentState.books.toMutableList()
-            currentBooks.add(newBook)
-            _uiState.value = currentState.copy(
-                books = currentBooks
-            )
+            fetchAllBooks()
+
+//            val currentBooks = currentState.books.toMutableList()
+//            currentBooks.add(newBook)
+//            _uiState.value = currentState.copy(
+//                books = currentBooks
+//            )
         }
     }
 
@@ -106,16 +108,17 @@ class AllBooksViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState is AllBooksState.AllBooks) {
             CoroutineScope(Dispatchers.IO).launch {
-                setFavoriteBookUC.setFavoriteBook(id)
+                setFavoriteBookUC.toggleFavorite(id)
             }
 
-            val indexById = currentState.books.indexOfFirst { it.id == id }
+            fetchAllBooks()
 
-            _uiState.value = currentState.copy(
-                books = currentState.books.toMutableList().also {
-                    it[indexById] =
-                        it[indexById].copy(isFavorite = it[indexById].isFavorite.not())
-                })
+//            val indexById = currentState.books.indexOfFirst { it.id == id }
+//            _uiState.value = currentState.copy(
+//                books = currentState.books.toMutableList().also {
+//                    it[indexById] =
+//                        it[indexById].copy(isFavorite = it[indexById].isFavorite.not())
+//                })
         }
 
     }

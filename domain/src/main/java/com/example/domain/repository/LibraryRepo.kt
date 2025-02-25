@@ -8,7 +8,7 @@ interface LibraryRepo {
     suspend fun borrowBook(id: Int)
     suspend fun returnBook(id: Int)
     suspend fun updateBook(book: Book)
-    suspend fun setFavoriteBook(id: Int)
+    suspend fun toggleFavorite(id: Int)
     suspend fun fetchBookById(id: Int): Book?
     suspend fun fetchFavoriteBooks(): List<Book>
     suspend fun fetchTrendingBooks(): List<Book>

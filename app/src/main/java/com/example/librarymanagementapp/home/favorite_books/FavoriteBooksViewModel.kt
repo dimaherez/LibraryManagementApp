@@ -77,7 +77,7 @@ class FavoriteBooksViewModel @Inject constructor(
                         .also { list -> list[ix] = list[ix].copy(isFavorite = list[ix].isFavorite.not()) }
                 )
 
-                setFavoriteBookUC.setFavoriteBook(id)
+                setFavoriteBookUC.toggleFavorite(id)
             }
         }
     }
