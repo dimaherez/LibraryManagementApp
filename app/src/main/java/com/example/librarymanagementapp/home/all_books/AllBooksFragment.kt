@@ -120,8 +120,8 @@ class AllBooksFragment : Fragment() {
         }
 
         binding.btnAddBook.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFragmentAddBook())
-//            viewModel.processIntent(AllBooksIntent.AddBook)
+//            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFragmentAddBook())
+            viewModel.processIntent(AllBooksIntent.AddBook)
         }
 
         binding.btnSetAllFavorites.setOnClickListener {
