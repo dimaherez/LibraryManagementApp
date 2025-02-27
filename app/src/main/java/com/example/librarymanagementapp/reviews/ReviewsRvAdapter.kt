@@ -20,8 +20,6 @@ class ReviewsRvAdapter:
     @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<Review>) {
         reviews = data
-
-        Log.d("mylog", "ReviewsAdatper ${reviews}")
         notifyDataSetChanged()
     }
 

@@ -12,7 +12,7 @@ import com.example.domain.models.Book
 import com.example.librarymanagementapp.R
 import com.example.librarymanagementapp.databinding.ItemBookBinding
 import com.example.librarymanagementapp.databinding.ItemSectionBinding
-import com.example.librarymanagementapp.home.all_books.ListItem
+
 
 private const val ITEM_VIEW_TYPE_SECTION = 0
 const val ITEM_VIEW_TYPE_BOOK = 1
@@ -42,7 +42,8 @@ class SectionedBooksAdapter(
     fun setData(data: List<Book>) {
 
         itemsList = data
-            .groupBy { it.title.first() }
+            .sortedBy { it.title }
+            .groupBy { it.title.first().uppercaseChar() }
             .toSortedMap()
             .flatMap { (key, books) ->
                 listOf(ListItem.Section(key)) + books.map { ListItem.BookInfo(it) }
@@ -63,8 +64,40 @@ class SectionedBooksAdapter(
         notifyItemChanged(position)
     }
 
+    private fun getPositionsForInitial(initial: Char): List<Int> {
+        val positions: MutableList<Int> = ArrayList()
+        itemsList.forEachIndexed { index, item ->
+            if (item is ListItem.BookInfo) {
+                if (item.book.title.first().equals(initial, ignoreCase = true)) {
+                    positions.add(index)
+                }
+            }
+        }
+        return positions
+    }
+
+    private fun selectItemsForInitial(initial: Char) {
+        getPositionsForInitial(initial).forEach {
+            tracker?.select(getItemId(it))
+        }
+    }
+
+    private fun deselectItemsForInitial(initial: Char) {
+        getPositionsForInitial(initial).forEach {
+            tracker?.deselect(getItemId(it))
+        }
+    }
+
     class SectionViewHolder(private val binding: ItemSectionBinding) :
         ViewHolder(binding.root) {
+
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> {
+            return object : ItemDetailsLookup.ItemDetails<Long>() {
+                override fun getPosition(): Int = bindingAdapterPosition
+                override fun getSelectionKey(): Long = itemId
+            }
+        }
+
         fun bind(section: Char) {
             binding.sectionTitle.text = section.toString()
         }
@@ -146,7 +179,15 @@ class SectionedBooksAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder) {
             is SectionViewHolder -> {
-                holder.bind((itemsList[position] as ListItem.Section).letter)
+                val initial = (itemsList[position] as ListItem.Section).letter
+
+                if (tracker?.isSelected(getItemId(position)) == true) {
+                    selectItemsForInitial(initial)
+                } else {
+                    deselectItemsForInitial(initial)
+                }
+
+                holder.bind(initial)
             }
 
             is BookViewHolder -> {

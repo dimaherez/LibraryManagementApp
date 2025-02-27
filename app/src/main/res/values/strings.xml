@@ -74,6 +74,8 @@
     <string name="new_label">*New</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="similar_books">Similar books</string>
+    <string name="latest_reviews">Latest reviews</string>
 
     <plurals name="plural_review">
         <item quantity="one">%d Review</item>

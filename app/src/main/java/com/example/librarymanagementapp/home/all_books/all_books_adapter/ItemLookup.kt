@@ -17,7 +17,9 @@ class ItemLookup(private val rv: RecyclerView) : ItemDetailsLookup<Long>() {
                 is SectionedBooksAdapter.BookViewHolder -> {
                     rvChildViewHolder.getItemDetails()
                 }
-
+                is SectionedBooksAdapter.SectionViewHolder -> {
+                    rvChildViewHolder.getItemDetails()
+                }
                 else -> {
                     outOfContextSelection
                 }

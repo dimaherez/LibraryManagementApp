@@ -16,11 +16,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.example.librarymanagementapp.R
 import com.example.librarymanagementapp.databinding.FragmentAllBooksBinding
 import com.example.librarymanagementapp.home.HomeBaseIntent
 import com.example.librarymanagementapp.home.HomeFragmentDirections
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.BookSelectionPredicate
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.ItemLookup
+import com.example.librarymanagementapp.home.all_books.all_books_adapter.ListItem
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.MyItemKeyProvider
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.SectionedBooksAdapter
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.SwipeToFavoriteCallback
@@ -46,11 +48,14 @@ class AllBooksFragment : Fragment() {
     }
 
     private fun navigateToInfoFragment(bookId: Int) {
-        findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToBookInfoFragment(
-                bookId = bookId
+        val navController = findNavController()
+        if (navController.currentDestination?.id != R.id.bookInfoFragment) {
+            navController.navigate(
+                HomeFragmentDirections.actionHomeFragmentToBookInfoFragment(
+                    bookId = bookId
+                )
             )
-        )
+        }
     }
 
     override fun onCreateView(
@@ -94,20 +99,28 @@ class AllBooksFragment : Fragment() {
         ).build()
 
         booksAdapter.tracker = tracker
-        ItemTouchHelper(SwipeToFavoriteCallback(booksAdapter, tracker!!)).attachToRecyclerView(binding.rvAllBooks)
+        ItemTouchHelper(
+            SwipeToFavoriteCallback(
+                requireContext(),
+                booksAdapter,
+                tracker!!
+            )
+        ).attachToRecyclerView(binding.rvAllBooks)
 
         tracker?.addObserver(
             object : SelectionTracker.SelectionObserver<Long>() {
                 override fun onSelectionChanged() {
                     selectedListItems =
-                        tracker?.selection?.map { booksAdapter.getItemByKey(it)!! } ?: emptyList()
+                        tracker?.selection
+                            ?.mapNotNull { booksAdapter.getItemByKey(it) }
+                            ?: emptyList()
 
                     Log.d(
                         "mylog",
                         "Selected items: ${selectedListItems.joinToString { it.book.title }}"
                     )
 
-                    tracker?.selection?.size()?.let {
+                    selectedListItems.size.let {
                         binding.groupSelectionButtons.isVisible = it > 0
                     }
                 }
@@ -125,6 +138,7 @@ class AllBooksFragment : Fragment() {
         }
 
         binding.btnSetAllFavorites.setOnClickListener {
+//            findNavController().navigate(HomeFragmentDirections.actionGlobalMyDialogFragment())
             selectedListItems.forEach {
                 viewModel.processIntent(AllBooksIntent.SetFavorite(it.book.id))
             }

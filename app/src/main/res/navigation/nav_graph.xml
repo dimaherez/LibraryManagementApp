@@ -20,7 +20,7 @@
 <!--            app:destination="@id/homeFragment" />-->
 <!--    </fragment>-->
 
-    <fragment
+    <dialog
         android:id="@+id/bookInfoFragment"
         android:name="com.example.librarymanagementapp.info.BookInfoFragment"
         android:label="Book Info"
@@ -39,7 +39,7 @@
             android:name="bookId"
             app:argType="integer"
             android:defaultValue="-1" />
-    </fragment>
+    </dialog>
 
     <fragment
         android:id="@+id/reviewsFragment"

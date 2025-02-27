@@ -9,8 +9,15 @@ import java.time.LocalDateTime
 import kotlin.random.Random
 
 object BooksDB {
-    val books = initBooks()
-    val bookOrders = initBookOrders()
+    var books: MutableList<Book>
+    var bookOrders: MutableList<BookOrder>
+
+    init {
+        books = initBooks()
+//        books.addAll(generateRandomBooks())
+
+        bookOrders = initBookOrders()
+    }
 
     private fun initBooks(): MutableList<Book> {
         val books = mutableListOf(
@@ -107,13 +114,10 @@ object BooksDB {
             )
         )
 
-
-//        books.addAll(generateRandomBooks(30))
-
         return books
     }
 
-    private fun generateRandomBooks(n: Int): List<Book> {
+    private fun generateRandomBooks(n: Int = 10): List<Book> {
         fun randomDate(): LocalDate {
             val startEpochDay = LocalDate.of(1900, 1, 1).toEpochDay()
             val endEpochDay = LocalDate.of(2025, 12, 31).toEpochDay()
@@ -121,11 +125,16 @@ object BooksDB {
             return LocalDate.ofEpochDay(randomDay)
         }
 
+        fun randomInitial(): Char {
+            val alphabet = ('A'..'Z') + ('a'..'z')
+            return alphabet[Random.nextInt(alphabet.size)]
+        }
+
         return List(n) { index ->
             Book(
-                id = index + 10,
-                title = "Title $index",
-                genre = Genre.values().random(),
+                id = books.size + 1,
+                title = "${randomInitial()} Title $index",
+                genre = Genre.entries.toTypedArray().random(),
                 author = "Author $index",
                 releaseDate = randomDate(),
                 price = Random.nextFloat() * 100,

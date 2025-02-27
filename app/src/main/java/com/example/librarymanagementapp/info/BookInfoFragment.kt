@@ -1,12 +1,10 @@
 package com.example.librarymanagementapp.info
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,13 +16,18 @@ import com.example.domain.models.Book
 import com.example.librarymanagementapp.R
 import com.example.librarymanagementapp.databinding.FragmentBookInfoBinding
 import com.example.librarymanagementapp.mvi.BaseUiState
+import com.example.librarymanagementapp.reviews.ReviewsRvAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
-class BookInfoFragment : Fragment() {
+class BookInfoFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBookInfoBinding
     private val viewModel: BookInfoViewModel by viewModels()
+    private val reviewsRvAdapter: ReviewsRvAdapter = ReviewsRvAdapter()
     private val args: BookInfoFragmentArgs by navArgs()
 
 
@@ -36,8 +39,28 @@ class BookInfoFragment : Fragment() {
         return binding.root
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+//        binding.root.post {
+//            val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+//            bottomSheet?.let {
+//                val bottomSheetBehavior = BottomSheetBehavior.from(it)
+//                val rowHeight = binding.linearLayoutReviews.height
+//                bottomSheetBehavior.peekHeight = rowHeight
+//            }
+//        }
+
+
+        binding.root.post {
+            val bottomSheet = binding.constraintLayout.parent
+            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet as View)
+            val rowHeight = binding.linearLayoutReviews.height
+            bottomSheetBehavior.peekHeight = rowHeight
+        }
+
 
         viewModel.processIntent(BookInfoIntent.FetchBookById(args.bookId))
 
@@ -59,6 +82,8 @@ class BookInfoFragment : Fragment() {
                 .navigate(BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(args.bookId))
         }
 
+        binding.rvReviews.adapter = reviewsRvAdapter
+
     }
 
     private fun handleState(state: BaseUiState){
@@ -67,6 +92,7 @@ class BookInfoFragment : Fragment() {
 
             }
             is BookInfoState.BookData -> {
+                reviewsRvAdapter.setData(state.book.reviews)
                 showInfo(state.book)
             }
             is BaseUiState.Error -> {

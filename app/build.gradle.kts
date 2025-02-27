@@ -67,6 +67,7 @@ dependencies {
     implementation (libs.androidx.recyclerview)
     implementation (libs.androidx.viewbinding)
 
+
     // Recycler view items selection
     implementation (libs.androidx.recyclerview.selection)
 

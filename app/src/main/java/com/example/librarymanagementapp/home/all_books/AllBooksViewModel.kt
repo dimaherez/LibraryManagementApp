@@ -17,6 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -67,6 +69,18 @@ class AllBooksViewModel @Inject constructor(
         }
     }
 
+    private fun toggleFavorite(id: Int) {
+        Log.d("mylog", "toggleFavorite")
+        val currentState = _uiState.value
+        if (currentState is AllBooksState.AllBooks) {
+            CoroutineScope(Dispatchers.IO).launch {
+                setFavoriteBookUC.toggleFavorite(id)
+            }
+
+            fetchAllBooks()
+        }
+    }
+
     private fun addBook() {
         val currentState = _uiState.value
         if (currentState is AllBooksState.AllBooks) {
@@ -93,35 +107,9 @@ class AllBooksViewModel @Inject constructor(
             }
 
             fetchAllBooks()
-
-//            val currentBooks = currentState.books.toMutableList()
-//            currentBooks.add(newBook)
-//            _uiState.value = currentState.copy(
-//                books = currentBooks
-//            )
         }
     }
 
-
-    private fun toggleFavorite(id: Int) {
-        Log.d("mylog", "toggleFavorite")
-        val currentState = _uiState.value
-        if (currentState is AllBooksState.AllBooks) {
-            CoroutineScope(Dispatchers.IO).launch {
-                setFavoriteBookUC.toggleFavorite(id)
-            }
-
-            fetchAllBooks()
-
-//            val indexById = currentState.books.indexOfFirst { it.id == id }
-//            _uiState.value = currentState.copy(
-//                books = currentState.books.toMutableList().also {
-//                    it[indexById] =
-//                        it[indexById].copy(isFavorite = it[indexById].isFavorite.not())
-//                })
-        }
-
-    }
 
     private fun fetchAllBooks() {
 //        _uiState.value = BaseUiState.Loading

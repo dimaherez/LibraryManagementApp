@@ -4,7 +4,6 @@ import androidx.recyclerview.selection.SelectionTracker
 
 class BookSelectionPredicate : SelectionTracker.SelectionPredicate<Long>() {
     override fun canSetStateForKey(key: Long, nextState: Boolean): Boolean {
-        // warranties that clicks out of the Book item's scope are disabled
         return key != ItemLookup.OUT_OF_CONTEXT_POSITION
     }
 

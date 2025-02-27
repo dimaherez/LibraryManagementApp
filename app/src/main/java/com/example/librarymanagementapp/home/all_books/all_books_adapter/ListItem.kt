@@ -1,4 +1,4 @@
-package com.example.librarymanagementapp.home.all_books
+package com.example.librarymanagementapp.home.all_books.all_books_adapter
 
 import com.example.domain.models.Book
 

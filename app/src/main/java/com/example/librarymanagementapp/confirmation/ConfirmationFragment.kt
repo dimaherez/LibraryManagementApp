@@ -11,8 +11,15 @@ class ConfirmationFragment : DialogFragment() {
         return AlertDialog.Builder(requireContext())
             .setTitle("Confirmation")
             .setMessage("Are you sure?")
-            .setPositiveButton("Yes") { dialog, _ -> dialog.dismiss() }
-            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton("Yes") { _, _ ->
+
+                dismiss()
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+
+                dismiss()
+            }
             .create()
     }
+
 }

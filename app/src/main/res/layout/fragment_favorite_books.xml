@@ -76,10 +76,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
-                app:constraint_referenced_ids="recommendedBooksLabel, rvRecommendedBooks" />
+                app:constraint_referenced_ids="tvReviewsLabel, rvRecommendedBooks" />
 
             <TextView
-                android:id="@+id/recommendedBooksLabel"
+                android:id="@+id/tvReviewsLabel"
                 style="@style/style_text.bold.24"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                 android:padding="16dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recommendedBooksLabel" />
+                app:layout_constraintTop_toBottomOf="@id/tvReviewsLabel" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
