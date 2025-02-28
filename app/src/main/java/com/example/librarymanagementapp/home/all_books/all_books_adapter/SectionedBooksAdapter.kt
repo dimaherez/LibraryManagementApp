@@ -23,20 +23,38 @@ class SectionedBooksAdapter(
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     lateinit var context: Context
-    var itemsList: List<ListItem> = listOf()
-        private set
+    private var itemsList: List<ListItem> = listOf()
     var tracker: SelectionTracker<Long>? = null
 
     init {
         setHasStableIds(true)
     }
 
-    override fun getItemId(position: Int): Long = itemsList[position].hashCode().toLong()
+    override fun getItemId(position: Int): Long {
+        return when (val item = itemsList[position]) {
+            is ListItem.BookInfo -> item.book.id.toLong()
+            is ListItem.Section -> item.letter.code.toLong()
+        }
+    }
 
     fun getItemByKey(key: Long): ListItem.BookInfo? {
         return itemsList.filterIsInstance<ListItem.BookInfo>()
-            .find { it.hashCode().toLong() == key }
+            .find { it.book.id.toLong() == key }
     }
+
+    fun getPosition(key: Long): Int {
+        return itemsList.indexOfFirst {
+            when (it) {
+                is ListItem.BookInfo -> it.book.id.toLong() == key
+                is ListItem.Section -> it.letter.code.toLong() == key
+            }
+        }
+    }
+
+    fun getBookIdByPosition(position: Int): Int {
+        return (itemsList[position] as ListItem.BookInfo).book.id
+    }
+
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<Book>) {
@@ -50,18 +68,6 @@ class SectionedBooksAdapter(
             }
 
         notifyDataSetChanged()
-    }
-
-    fun resetFavorite(position: Int) {
-        val item: ListItem.BookInfo = itemsList[position] as ListItem.BookInfo
-        item.book.isFavorite = false
-        notifyItemChanged(position)
-    }
-
-    fun setFavorite(position: Int) {
-        val item: ListItem.BookInfo = itemsList[position] as ListItem.BookInfo
-        item.book.isFavorite = true
-        notifyItemChanged(position)
     }
 
     private fun getPositionsForInitial(initial: Char): List<Int> {
@@ -85,6 +91,36 @@ class SectionedBooksAdapter(
     private fun deselectItemsForInitial(initial: Char) {
         getPositionsForInitial(initial).forEach {
             tracker?.deselect(getItemId(it))
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int =
+        when (itemsList[position]) {
+            is ListItem.Section -> ITEM_VIEW_TYPE_SECTION
+            is ListItem.BookInfo -> ITEM_VIEW_TYPE_BOOK
+        }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        context = parent.context
+        return when (viewType) {
+            ITEM_VIEW_TYPE_SECTION -> {
+                val binding =
+                    ItemSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                SectionViewHolder(binding)
+            }
+
+            ITEM_VIEW_TYPE_BOOK -> {
+                val binding =
+                    ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                BookViewHolder(
+                    binding,
+                    parent,
+                    onFavoriteCLick = onFavoriteCLick,
+                    onInfoClick = onInfoClick
+                )
+            }
+
+            else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
 
@@ -146,36 +182,6 @@ class SectionedBooksAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int): Int =
-        when (itemsList[position]) {
-            is ListItem.Section -> ITEM_VIEW_TYPE_SECTION
-            is ListItem.BookInfo -> ITEM_VIEW_TYPE_BOOK
-        }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        context = parent.context
-        return when (viewType) {
-            ITEM_VIEW_TYPE_SECTION -> {
-                val binding =
-                    ItemSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                SectionViewHolder(binding)
-            }
-
-            ITEM_VIEW_TYPE_BOOK -> {
-                val binding =
-                    ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                BookViewHolder(
-                    binding,
-                    parent,
-                    onFavoriteCLick = onFavoriteCLick,
-                    onInfoClick = onInfoClick
-                )
-            }
-
-            else -> throw ClassCastException("Unknown viewType $viewType")
-        }
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder) {
             is SectionViewHolder -> {
@@ -200,5 +206,4 @@ class SectionedBooksAdapter(
     }
 
     override fun getItemCount(): Int = itemsList.size
-
 }

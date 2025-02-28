@@ -8,6 +8,6 @@ class MyItemKeyProvider(private val adapter: SectionedBooksAdapter) : ItemKeyPro
     }
 
     override fun getPosition(key: Long): Int {
-        return adapter.itemsList.indexOfFirst { it.hashCode().toLong() == key }
+        return adapter.getPosition(key)
     }
 }

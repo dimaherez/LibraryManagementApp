@@ -68,7 +68,7 @@
 
     <dialog
         android:id="@+id/confirmationFragment"
-        android:name="com.example.librarymanagementapp.confirmation.ConfirmationFragment"
+        android:name="com.example.librarymanagementapp.confirmation.AlertDialogConfirmation"
         android:label="Confirmation" />
 
     <action

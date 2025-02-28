@@ -17,25 +17,29 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.librarymanagementapp.R
+import com.example.librarymanagementapp.confirmation.AlertDialogConfirmation
 import com.example.librarymanagementapp.databinding.FragmentAllBooksBinding
 import com.example.librarymanagementapp.home.HomeBaseIntent
 import com.example.librarymanagementapp.home.HomeFragmentDirections
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.BookSelectionPredicate
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.ItemLookup
+import com.example.librarymanagementapp.home.all_books.all_books_adapter.ItemTouchHelperCallback
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.ListItem
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.MyItemKeyProvider
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.SectionedBooksAdapter
-import com.example.librarymanagementapp.home.all_books.all_books_adapter.SwipeToFavoriteCallback
+import com.example.librarymanagementapp.home.all_books.all_books_adapter.SwipeToFavoriteHelper
 import com.example.librarymanagementapp.mvi.BaseUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class AllBooksFragment : Fragment() {
+class AllBooksFragment : Fragment(), AlertDialogConfirmation.AlertDialogCallback,
+    ItemTouchHelperCallback {
     private lateinit var binding: FragmentAllBooksBinding
     private val viewModel by viewModels<AllBooksViewModel>()
     private var tracker: SelectionTracker<Long>? = null
+    private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var selectedListItems: List<ListItem.BookInfo>
 
     private val booksAdapter = SectionedBooksAdapter(
@@ -77,10 +81,6 @@ class AllBooksFragment : Fragment() {
             }
         }
 
-//        viewModel.uiState.observe(viewLifecycleOwner) { state ->
-//            handleState(state)
-//        }
-
         setupListeners()
         setupAdapter()
     }
@@ -99,13 +99,14 @@ class AllBooksFragment : Fragment() {
         ).build()
 
         booksAdapter.tracker = tracker
-        ItemTouchHelper(
-            SwipeToFavoriteCallback(
+
+        itemTouchHelper = ItemTouchHelper(
+            SwipeToFavoriteHelper(
                 requireContext(),
-                booksAdapter,
-                tracker!!
+                itemTouchHelperCallback = this
             )
-        ).attachToRecyclerView(binding.rvAllBooks)
+        )
+        itemTouchHelper.attachToRecyclerView(binding.rvAllBooks)
 
         tracker?.addObserver(
             object : SelectionTracker.SelectionObserver<Long>() {
@@ -133,7 +134,6 @@ class AllBooksFragment : Fragment() {
         }
 
         binding.btnAddBook.setOnClickListener {
-//            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFragmentAddBook())
             viewModel.processIntent(AllBooksIntent.AddBook)
         }
 
@@ -146,10 +146,9 @@ class AllBooksFragment : Fragment() {
         }
 
         binding.btnRemoveAllFavorites.setOnClickListener {
-            selectedListItems.forEach {
-                viewModel.processIntent(AllBooksIntent.ResetFavorite(it.book.id))
-            }
-            tracker?.clearSelection()
+//            findNavController().navigate(HomeFragmentDirections.actionGlobalMyDialogFragment())
+            val dialogFragment = AlertDialogConfirmation.newInstance(this)
+            dialogFragment.show(parentFragmentManager, "AlertDialogConfirmation")
         }
     }
 
@@ -181,4 +180,41 @@ class AllBooksFragment : Fragment() {
         binding.swipe.isRefreshing = false
     }
 
+    override fun onPositiveClick() {
+        selectedListItems.forEach {
+            viewModel.processIntent(AllBooksIntent.ResetFavorite(it.book.id))
+        }
+        tracker?.clearSelection()
+    }
+
+    override fun onNegativeClick() {
+        tracker?.clearSelection()
+    }
+
+    override fun onSwipeToRight(position: Int) {
+        viewModel.processIntent(
+            AllBooksIntent.ResetFavorite(
+                booksAdapter.getBookIdByPosition(
+                    position
+                )
+            )
+        )
+        resetItemTouchHelper()
+    }
+
+    override fun onSwipeToLeft(position: Int) {
+        viewModel.processIntent(
+            AllBooksIntent.SetFavorite(
+                booksAdapter.getBookIdByPosition(
+                    position
+                )
+            )
+        )
+        resetItemTouchHelper()
+    }
+
+    private fun resetItemTouchHelper() { // The only workaround to revert swipe animation
+        itemTouchHelper.attachToRecyclerView(null)
+        itemTouchHelper.attachToRecyclerView(binding.rvAllBooks)
+    }
 }
