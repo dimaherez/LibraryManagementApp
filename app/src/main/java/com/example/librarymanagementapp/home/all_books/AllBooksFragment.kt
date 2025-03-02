@@ -23,9 +23,9 @@ import com.example.librarymanagementapp.confirmation.AlertDialogConfirmation
 import com.example.librarymanagementapp.databinding.FragmentAllBooksBinding
 import com.example.librarymanagementapp.home.HomeBaseIntent
 import com.example.librarymanagementapp.home.HomeFragmentDirections
+import com.example.librarymanagementapp.home.all_books.all_books_adapter.BookSelectionPredicate
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.ItemLookup
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.ItemTouchHelperCallback
-import com.example.librarymanagementapp.home.all_books.all_books_adapter.ListItem
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.SectionedBooksAdapter
 import com.example.librarymanagementapp.home.all_books.all_books_adapter.SwipeToFavoriteHelper
 import com.example.librarymanagementapp.mvi.BaseUiState
@@ -40,12 +40,9 @@ class AllBooksFragment : Fragment(), AlertDialogConfirmation.AlertDialogCallback
     private val viewModel by viewModels<AllBooksViewModel>()
     private var tracker: SelectionTracker<Long>? = null
     private lateinit var itemTouchHelper: ItemTouchHelper
-    private lateinit var selectedListItems: List<ListItem.BookInfo>
 
-    private val booksAdapter = SectionedBooksAdapter(
-        onFavoriteCLick = { id -> toggleFavorite(id) },
-        onInfoClick = { id -> navigateToInfoFragment(id) }
-    )
+    private val booksAdapter = SectionedBooksAdapter(onFavoriteCLick = { id -> toggleFavorite(id) },
+        onInfoClick = { id -> navigateToInfoFragment(id) })
 
     private fun toggleFavorite(id: Int) {
         viewModel.processIntent(HomeBaseIntent.ToggleFavoriteBook(id))
@@ -63,8 +60,7 @@ class AllBooksFragment : Fragment(), AlertDialogConfirmation.AlertDialogCallback
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentAllBooksBinding.inflate(layoutInflater)
         return binding.root
@@ -95,38 +91,30 @@ class AllBooksFragment : Fragment(), AlertDialogConfirmation.AlertDialogCallback
             ItemLookup(binding.rvAllBooks),
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(
-            SelectionPredicates.createSelectAnything()
+            BookSelectionPredicate()
         ).build()
 
         booksAdapter.tracker = tracker
 
         itemTouchHelper = ItemTouchHelper(
             SwipeToFavoriteHelper(
-                requireContext(),
-                itemTouchHelperCallback = this
+                requireContext(), itemTouchHelperCallback = this
             )
         )
         itemTouchHelper.attachToRecyclerView(binding.rvAllBooks)
 
-        tracker?.addObserver(
-            object : SelectionTracker.SelectionObserver<Long>() {
-                override fun onSelectionChanged() {
-                    selectedListItems =
-                        tracker?.selection
-                            ?.mapNotNull { booksAdapter.getItemByKey(it) }
-                            ?: emptyList()
-
-                    Log.d(
-                        "mylog",
-                        "Selected items: ${selectedListItems.joinToString { it.book.title }}"
-                    )
-
-                    selectedListItems.size.let {
-                        binding.groupSelectionButtons.isVisible = it > 0
-                    }
+        tracker?.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
+            override fun onSelectionChanged() {
+                getSelectedItems().size.let {
+                    binding.groupSelectionButtons.isVisible = it > 0
                 }
-            })
+            }
+        })
     }
+
+    private fun getSelectedItems() =
+        tracker?.selection?.mapNotNull { booksAdapter.getItemByKey(it) } ?: emptyList()
+
 
     private fun setupListeners() {
         binding.swipe.setOnRefreshListener {
@@ -139,7 +127,7 @@ class AllBooksFragment : Fragment(), AlertDialogConfirmation.AlertDialogCallback
 
         binding.btnSetAllFavorites.setOnClickListener {
 //            findNavController().navigate(HomeFragmentDirections.actionGlobalMyDialogFragment())
-            selectedListItems.forEach {
+            getSelectedItems().forEach {
                 viewModel.processIntent(AllBooksIntent.SetFavorite(it.book.id))
             }
             tracker?.clearSelection()
@@ -178,10 +166,11 @@ class AllBooksFragment : Fragment(), AlertDialogConfirmation.AlertDialogCallback
             viewModel.processIntent(AllBooksIntent.FetchAllBooks)
         }
         binding.swipe.isRefreshing = false
+        tracker?.clearSelection()
     }
 
     override fun onPositiveClick() {
-        selectedListItems.forEach {
+        getSelectedItems().forEach {
             viewModel.processIntent(AllBooksIntent.ResetFavorite(it.book.id))
         }
         tracker?.clearSelection()

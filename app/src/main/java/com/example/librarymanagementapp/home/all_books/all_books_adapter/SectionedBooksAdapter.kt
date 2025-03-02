@@ -2,7 +2,9 @@ package com.example.librarymanagementapp.home.all_books.all_books_adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
@@ -42,15 +44,6 @@ class SectionedBooksAdapter(
             .find { it.book.id.toLong() == key }
     }
 
-    fun getPosition(key: Long): Int {
-        return itemsList.indexOfFirst {
-            when (it) {
-                is ListItem.BookInfo -> it.book.id.toLong() == key
-                is ListItem.Section -> it.letter.code.toLong() == key
-            }
-        }
-    }
-
     fun getBookIdByPosition(position: Int): Int {
         return (itemsList[position] as ListItem.BookInfo).book.id
     }
@@ -82,15 +75,23 @@ class SectionedBooksAdapter(
         return positions
     }
 
-    private fun selectItemsForInitial(initial: Char) {
-        getPositionsForInitial(initial).forEach {
+    private fun selectBooksStartingWith(firstLetter: Char) {
+        getPositionsForInitial(firstLetter).forEach {
             tracker?.select(getItemId(it))
         }
     }
 
-    private fun deselectItemsForInitial(initial: Char) {
+    private fun deselectBooksStartingWith(initial: Char) {
         getPositionsForInitial(initial).forEach {
             tracker?.deselect(getItemId(it))
+        }
+    }
+
+    private fun toggleBooksSelection(firstLetter: Char, isSelected: Boolean) {
+        if (isSelected) {
+            selectBooksStartingWith(firstLetter)
+        } else {
+            deselectBooksStartingWith(firstLetter)
         }
     }
 
@@ -126,13 +127,6 @@ class SectionedBooksAdapter(
 
     class SectionViewHolder(private val binding: ItemSectionBinding) :
         ViewHolder(binding.root) {
-
-        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> {
-            return object : ItemDetailsLookup.ItemDetails<Long>() {
-                override fun getPosition(): Int = bindingAdapterPosition
-                override fun getSelectionKey(): Long = itemId
-            }
-        }
 
         fun bind(section: Char) {
             binding.sectionTitle.text = section.toString()
@@ -185,15 +179,16 @@ class SectionedBooksAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder) {
             is SectionViewHolder -> {
-                val initial = (itemsList[position] as ListItem.Section).letter
+                val firstLetter = (itemsList[position] as ListItem.Section).letter
 
-                if (tracker?.isSelected(getItemId(position)) == true) {
-                    selectItemsForInitial(initial)
-                } else {
-                    deselectItemsForInitial(initial)
+                holder.itemView.setOnLongClickListener {
+                    val doSelect =
+                        getPositionsForInitial(firstLetter).any { tracker?.isSelected(getItemId(it)) == false }
+                    toggleBooksSelection(firstLetter, doSelect)
+                    true
                 }
 
-                holder.bind(initial)
+                holder.bind(firstLetter)
             }
 
             is BookViewHolder -> {

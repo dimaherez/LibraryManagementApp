@@ -14,7 +14,7 @@ object BooksDB {
 
     init {
         books = initBooks()
-//        books.addAll(generateRandomBooks())
+        books.addAll(generateRandomBooks())
 
         bookOrders = initBookOrders()
     }
@@ -132,7 +132,7 @@ object BooksDB {
 
         return List(n) { index ->
             Book(
-                id = books.size + 1,
+                id = books.size + index + 1,
                 title = "${randomInitial()} Title $index",
                 genre = Genre.entries.toTypedArray().random(),
                 author = "Author $index",
